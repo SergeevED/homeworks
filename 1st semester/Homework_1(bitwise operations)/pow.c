@@ -20,8 +20,8 @@ int64_t pow_mine(int32_t a, int32_t n)
 {
 	static int64_t subRes = 1;
 	if (!n) return 1;
-	subRes=pow_mine(a, n >> 1);
-	subRes*=subRes;
+	subRes = pow_mine(a, n >> 1);
+	subRes *= subRes;
 	if (n & 1)
 	{
 		subRes *= a;
