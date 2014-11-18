@@ -17,6 +17,7 @@ int main()
 	return 0;
 }
 
+
 void overflowedProcedure()
 {
 	printf("First procedure is executing\n");
@@ -24,7 +25,7 @@ void overflowedProcedure()
 	printf("notExecutableProcedure %p\n", &(notExecutableProcedure) );
 	char data[5];
 	scanf("%s", data);
-	for (int i = 0; i < 200; i++)
+	for (int i=0; i<200; i++)
 	printf("%c", *(data-100+i) );
 }
 
@@ -32,3 +33,5 @@ void notExecutableProcedure()
 {
 	printf("\nSecond procedure is executing\n");
 }
+
+#pragma pack(pop)

@@ -18,5 +18,5 @@ int main(void)
 
 int posNegZero(int32_t n)
 {
-	return ((n >> 0x1F) + !(n >> 0x1F) + ~(!n + ~0));
+	return ( (n >> 0x1F) + !( n >> 0x1F) + ~( !n + ~0 ) );
 }
