@@ -25,7 +25,11 @@ void displayLink(link** firstLink)
 	link *currentLink = *firstLink;
 	while (currentLink)
 	{
-		printf("%d ", currentLink->val);
+		printf("%d", currentLink->val);
+		if (currentLink->next != NULL)
+		{
+			printf(", ");
+		}
 		currentLink = currentLink->next;
 	}
 		printf("\n");

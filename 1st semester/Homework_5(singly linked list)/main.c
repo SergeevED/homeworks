@@ -15,7 +15,7 @@ int main()
 	{
 		char c = '\n';
 		int numb = 0;
-		while (c != 'a' && c != 'p' && c != 'r' && c != 'q')
+		while (c!='a' && c!='p' && c!='r' && c!='q')
 		{
 			scanf("%c", &c);
 		}
@@ -29,7 +29,7 @@ int main()
 			addLink(numb, &firstLink);
 			break;
 		case 'p':
-			displayLink(&firstLink); 
+			displayLink(&firstLink);
 			break;
 		case 'r':
 			deleteLink(numb, &firstLink);

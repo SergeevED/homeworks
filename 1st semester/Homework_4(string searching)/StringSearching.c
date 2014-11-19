@@ -42,14 +42,15 @@ int main()
 	int lengthOfHit = 0;
 	for(int i = 0; i < strLength + 1; ++i)
 	{
-		if ((lengthOfHit == substrLength) && (lengthOfHit != 0))
-		{
-			lengthOfHit = 0;
-			numbofSubstr++;
-		}
+		
 		if (str[i] == *(substr + lengthOfHit))
 		{
 			lengthOfHit++;
+			if ((lengthOfHit == substrLength) && (lengthOfHit != 0))
+			{
+				lengthOfHit = 0;
+				numbofSubstr++;
+			}
 		}
 		else
 		{
