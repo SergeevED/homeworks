@@ -1,18 +1,16 @@
-struct link
-{
-	int val;
-	link *next;
-};
+#include "LinkedList.h"
 
 void addLink(int data, link** firstLink)
 {
 	link *newLink = (link *)malloc(sizeof(link));
-	if (newLink)
+	if (newLink == 0)
 	{
+		printf("Lack of memory\n");
+		exit(0);
+	}
 		newLink->next = *firstLink;
 		newLink->val = data;
 		*firstLink = newLink;
-	}
 }
 
 void displayLink(link** firstLink)
@@ -32,7 +30,7 @@ void displayLink(link** firstLink)
 		}
 		currentLink = currentLink->next;
 	}
-		printf("\n");
+	printf("\n");
 }
 
 void deleteLink(int data, link** firstLink)
@@ -75,12 +73,11 @@ void cleanList(link** firstLink)
 	{
 		return;
 	}
-	link *currentLink = (*firstLink)->next;
+	link *currentLink = *firstLink;
 	while (currentLink)
 	{
 		link *temp = currentLink;
 		currentLink = currentLink->next;
 		free(temp);
 	}
-	free(*firstLink);
 }

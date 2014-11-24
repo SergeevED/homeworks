@@ -1,16 +1,14 @@
-/*	homework ¹5
-	singly linked list 
-	Sergeev Evgeniy 171 gr*/
+/* homework ¹5
+singly linked list 
+Sergeev Evgeniy 171 gr*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "singlyLinkedList.h"
+#include "LinkedList.h"
 
 int main()
 {
 	link *firstLink = NULL;
 	printf("Enter 'a' <number> to add <number>\nEnter 'p' to display all values\n"
-		   "Enter 'r' <number> to delete first entry of <number>\nEnter 'q' to exit\n");
+	"Enter 'r' <number> to delete first entry of <number>\nEnter 'q' to exit\n");
 	while (true)
 	{
 		char c = '\n';
@@ -20,11 +18,11 @@ int main()
 			scanf("%c", &c);
 		}
 		if (c == 'a' || c == 'r')
-		{
-			scanf("%d", &numb);
-		}
-		switch (c)
-		{
+	{
+		scanf("%d", &numb);
+	}
+	switch (c)
+	{
 		case 'a':
 			addLink(numb, &firstLink);
 			break;
@@ -38,7 +36,7 @@ int main()
 			cleanList(&firstLink);
 			exit(0);
 			break;
-		}
 	}
+}
 return 0;
 }
