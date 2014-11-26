@@ -36,7 +36,7 @@ int main()
 			lengthOfHit = 0;
 		}
 	}
-
+	
 	printf("%d", numbofSubstr);
 
 	return 0;
