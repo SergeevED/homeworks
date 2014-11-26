@@ -38,7 +38,8 @@ int main()
 	}
 	
 	printf("%d", numbofSubstr);
-
+	free(str);
+	free(substr);
 	return 0;
 }
 
