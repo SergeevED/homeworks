@@ -4,17 +4,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int scanString(char* str);
+int scanString(char* str);  //returns length of string or 0 in case of lack of memory
 
 int main()
 {
-	char *str = (char*)malloc(sizeof(char));
+	char *str = (char*)malloc(sizeof(char));	
 	printf("Enter string\n");
 	int strLength = scanString(str);
 
-	char *substr = (char*)malloc(sizeof(char));
+	char *substr = (char*)malloc(sizeof(char));	
 	printf("Enter substring\n");
 	int substrLength = scanString(substr);
+
+
+	if (strLength == 0 || substrLength == 0)
+	{
+		free(str);
+		free(substr);
+		exit(0);
+	}
 
 	int numbofSubstr = 0;
 	int lengthOfHit = 0;
@@ -38,8 +46,7 @@ int main()
 	}
 	
 	printf("%d", numbofSubstr);
-	free(str);
-	free(substr);
+
 	return 0;
 }
 
@@ -49,7 +56,7 @@ int scanString(char* str)
 	if (str == NULL)
 	{
 		printf("Lack of memory");
-		exit(0);
+		return 0;
 	}
 	int strLength = 0;
 	while(true)
@@ -70,7 +77,7 @@ int scanString(char* str)
 			if (str == NULL)
 			{
 				printf("Lack of memory");
-				exit(0);
+				return 0;
 			}
 		}
 	}

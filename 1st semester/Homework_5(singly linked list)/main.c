@@ -13,30 +13,25 @@ int main()
 	{
 		char c = '\n';
 		int numb = 0;
-		while (c!='a' && c!='p' && c!='r' && c!='q')
+		scanf("%c", &c);
+		switch (c)
 		{
-			scanf("%c", &c);
+			case 'a':
+				scanf("%d", &numb);
+				addLink(numb, &firstLink);
+				break;
+			case 'p':
+				displayLink(&firstLink);
+				break;
+			case 'r':
+				scanf("%d", &numb);
+				deleteLink(numb, &firstLink);
+				break;
+			case 'q':
+				cleanList(&firstLink);
+				exit(0);
+				break;
 		}
-		if (c == 'a' || c == 'r')
-	{
-		scanf("%d", &numb);
 	}
-	switch (c)
-	{
-		case 'a':
-			addLink(numb, &firstLink);
-			break;
-		case 'p':
-			displayLink(&firstLink);
-			break;
-		case 'r':
-			deleteLink(numb, &firstLink);
-			break;
-		case 'q':
-			cleanList(&firstLink);
-			exit(0);
-			break;
-	}
-}
 return 0;
 }
