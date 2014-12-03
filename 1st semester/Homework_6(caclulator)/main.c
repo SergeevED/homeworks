@@ -7,94 +7,90 @@ Sergeev Evgeniy 171 gr*/
 
 int main()
 {
-	printf("Calculator for long numbers\n'+', '-' are supported\nNumbers and operations should be separated by space\nExample: a + b	(a, b  - integer numbers)\nEnter 'Q' to exit\n\n");
+	printf("Calculator for long numbers\n'+', '-', '*' are supported\nNumbers and operations should be separated by space\nExample: a + b	(a, b  - integer numbers)\nEnter 'Q' to exit\n\n");
+	
+	
 	while(true)
 	{
-		int operation = 0;
-		int firstSign = 0, secondSign = 0;
-		bool is_correct = true;
-		link *firstNum = NULL;
 
+		char operation = '0';
+		bool is_correct;
+		is_correct = true;
 		char c = '\n';
-		while(c != '\n')
+
+		intLink firstNum;
+		firstNum = intLink_scanNum(&is_correct, &operation);
+		if (is_correct == false)
 		{
-			if (c == 'Q')
-		{
+			intLink_deleteNumbs(&firstNum, NULL, NULL);
 			exit(0);
 		}
-			scanf("%c", &c);
-		}
-
-		firstNum = scanNum(&firstSign, &is_correct);
-		if (is_correct == false)
+		
+		if (operation == '0')
 		{
-			cleanList(&firstNum);
-			continue;
+			while (c == ' ' || c == '\n')			//scanning operation
+			{
+				scanf("%c", &c);
+				switch (c)
+				{
+					case 'Q':
+						printf("You quit the program");
+						intLink_deleteNumbs(&firstNum, NULL, NULL);
+						exit(0);
+						break;
+					case '*':
+						operation = '*';
+						break;
+					case '+':
+						operation = '+';
+						break;
+					case '-':
+						operation = '-';
+						break;
+					case ' ':
+					case '\n':
+						break;
+					default:
+						printf("Unexpected sumbol '%c'\n", c);
+						intLink_deleteNumbs(&firstNum, NULL, NULL);
+						exit(0);
+						break;
+				}
+			}
 		}
 		
-		
-		while (c == ' ' || c == '\n')
-		{
-			scanf("%c", &c);
-			if (c == 'Q')
-			{
-				cleanList(&firstNum);
-				exit(0);
-			}
-			if (!(c == ' ' || c == '\n' || c == '+' || c == '-'))
-			{
-				printf("Unexpected sumbol '%c'\n", c);
-				is_correct = false;
-				break;
-			}
-			if (c == '+')
-			{
-				operation = 1;
-			}
-			else if (c == '-')
-			{
-				operation = -1;
-			}
-		}
+		intLink secondNum;
+		secondNum = intLink_scanNum(&is_correct, &operation);
 		if (is_correct == false)
 		{
-			cleanList(&firstNum);
-			continue;
+			intLink_deleteNumbs(&firstNum, &secondNum, NULL);
+			exit(0);
 		}
-		link *secondNum = NULL;
-		secondNum = scanNum(&secondSign, &is_correct);
-		if (is_correct == false)
-		{
-			cleanList(&firstNum);
-			cleanList(&secondNum);
-			continue;
-		}
-		if (firstNum == NULL || secondNum == NULL)
+		if (firstNum.head == NULL || secondNum.head == NULL)
 		{
 			printf("Lack of memory");
-			cleanList(&firstNum);
-			cleanList(&secondNum);
+			intLink_deleteNumbs(&firstNum, &secondNum, NULL);
 			exit(0);
 		}
 
-		secondSign *= operation;
-
-		link *resultNum = NULL;
-		int resultSign = 0;
-		resultNum = calcResult(firstNum, secondNum, firstSign, secondSign, &resultSign);
-			
-		if (resultSign == -1)
+		if (operation == '-')
 		{
-			resultNum->val *= -1;
+			secondNum.sign *= -1;
 		}
+		
+		intLink resultNum;
+		resultNum = intLink_calcResult(firstNum, secondNum, operation);
+			
+		if (resultNum.sign == -1 && (*resultNum.head).val != 0)
+		{
+			printf("-");
+		}
+		
 
-		displayLink(&resultNum);
-		cleanList(&resultNum);
-		cleanList(&firstNum);
-		cleanList(&secondNum);
+		linkList_display(&(resultNum.head));
+		intLink_deleteNumbs(&firstNum, &secondNum, &resultNum);
 	}
 	
 
 	return 0;
 }
-

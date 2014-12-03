@@ -23,10 +23,10 @@ int main()
 
 	if (data.bval.exp == 255 && data.bval.mant == 0) 
 	{
-		if (data.bval.sign > 0) printf("+ Infinity\n");
-		else printf("- Infinity\n");
+		if (data.bval.sign > 0) printf("Positive infinity\n");
+		else printf("Negative infinity\n");
 	}
-	else if (data.bval.exp == 255 && data.bval.mant != 0) 
+	else if (data.bval.exp == 255 && data.bval.mant != 0)
 	{
 		printf("NaN\n");
 	}

@@ -18,14 +18,14 @@ int main()
 	printf("Enter float\n");
 	scanf("%f", &data.fval);
 	int32_t sign, exp, mant;
-	sign = (int)(data.ival >> 31) & 0x1;
-	exp =  (int)(data.ival >> 23) & 0xFF;
-	mant = (int)data.ival & 0x7FFFFF;
+	sign = (int)data.ival >> 31 & 1;
+	exp =  (int)data.ival >> 23 & ((1 << 8) - 1);
+	mant = (int)data.ival & ((1 << 23) - 1);
 	
 	if (exp == 255 && mant == 0) 
 	{
-		if (sign > 0) printf("+ Infinity\n");
-		else printf("- Infinity\n");
+		if (sign > 0) printf("Positive infinity\n");
+		else printf("Negative infinity\n");
 	}
 	else if (exp == 255 && mant != 0) 
 	{

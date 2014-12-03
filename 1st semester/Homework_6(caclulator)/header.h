@@ -1,32 +1,48 @@
 #ifndef _LINKEDLIST_H_
 #define _LINKEDLIST_H_
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 struct link
 {
-	int val;
+	short val;
 	link *next;
 };
 
-void addLinkBack(int data, link** firstLink);
+struct intLink
+{
+	short sign;
+	link *head;
+};
 
-void addLinkFront(int data, link** firstLink);
+void linkList_addFront(link** firstLink, int data);
 
-void displayLink(link** firstLink);
+void linkList_display(link** firstLink);
 
-void deleteLink(int data, link** firstLink);
+void linkList_delete(link** firstLink, int data);
 
-void cleanList(link** firstLink);
+void linkList_clean(link** firstLink);
 
-link* scanNum(int *sign, bool* is_correct);
+void linkList_reverse(link **firstLink);
 
-link* calcResult(link *firstLink, link *secondLink, int firstSign, int secondSign, int *resultSign);
+void linkList_deleteLeadingZeroes(link **firstLink);
 
-link* sumNum(link *firstLink, link *secondLink);
+intLink intLink_scanNum(bool* is_correct, char *operation);
 
-link* subtractNum(link *firstLink, link *secondLink, int *resultSign);
+intLink intLink_calcResult(intLink firstNum, intLink secondNum, char operation);
+
+intLink intLink_sumNum(intLink firstNum, intLink secondNum);
+
+intLink intLink_subtractNum(intLink firstNum, intLink secondNum);
+
+intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum);
+
+
+void intLink_deleteNumbs(intLink *firstNum, intLink *secondNum, intLink *thirdNum);
+
 
 #endif

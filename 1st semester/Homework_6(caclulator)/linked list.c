@@ -1,7 +1,7 @@
 #include "header.h"
 
 
-void addLinkFront(int data, link** firstLink)
+void linkList_addFront(link** firstLink, int data)
 {
 	link *newLink = (link*)malloc(sizeof(link));
 	if (newLink == 0)
@@ -14,7 +14,7 @@ void addLinkFront(int data, link** firstLink)
 		*firstLink = newLink;
 }
 
-void displayLink(link** firstLink)
+void linkList_display(link** firstLink)
 {
 	if (*firstLink == NULL)
 	{
@@ -30,7 +30,7 @@ void displayLink(link** firstLink)
 	printf("\n");
 }
 
-void deleteLink(int data, link** firstLink)
+void linkList_delete(link** firstLink, int data)
 {
 	if ((*firstLink) == NULL || ((*firstLink)->val == data && (*firstLink)->next == 0) )
 	{
@@ -64,7 +64,7 @@ void deleteLink(int data, link** firstLink)
 	}
 }
 
-void cleanList(link** firstLink)
+void linkList_clean(link** firstLink)
 {
 	if (*firstLink == NULL)
 	{
@@ -79,3 +79,31 @@ void cleanList(link** firstLink)
 	}
 }
 
+void linkList_reverse(link **firstLink)
+{
+	link *newLink = NULL;
+	link *currentLink = *firstLink;
+	while (currentLink != 0)
+	{
+		linkList_addFront(&newLink, currentLink->val);
+		currentLink = currentLink->next;
+	}
+	linkList_clean(&*firstLink);
+	*firstLink = newLink;
+}
+
+void linkList_deleteLeadingZeroes(link **firstLink)
+{
+	link* currentLink = *firstLink;
+	while (currentLink->next != NULL)
+	{
+		if (currentLink->val == 0)
+		{
+			linkList_delete(&*firstLink, 0);
+		}
+		else
+		{
+			break;
+		}
+	}
+}
