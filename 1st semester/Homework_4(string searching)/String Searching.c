@@ -16,7 +16,6 @@ int main()
 	printf("Enter substring\n");
 	int substrLength = scanString(&substr);
 
-
 	if (strLength == 0 || substrLength == 0)
 	{
 		free(str);

@@ -7,6 +7,8 @@ void linkList_addFront(link** firstLink, int data)
 	if (newLink == 0)
 	{
 		printf("Lack of memory\n");
+		*tempLink = *firstLink;
+		linkList_clean(&tempLink);
 		exit(0);
 	}
 		newLink->next = *firstLink;

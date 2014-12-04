@@ -9,13 +9,11 @@ int main()
 {
 	printf("Calculator for long numbers\n'+', '-', '*' are supported\nNumbers and operations should be separated by space\nExample: a + b	(a, b  - integer numbers)\nEnter 'Q' to exit\n\n");
 	
-	
 	while(true)
 	{
 
 		char operation = '0';
-		bool is_correct;
-		is_correct = true;
+		bool is_correct = true;
 		char c = '\n';
 
 		intLink firstNum;

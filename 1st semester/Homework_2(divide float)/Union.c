@@ -39,7 +39,7 @@ int main()
 		float flMant = 0.0f;
 		for (int i = 0; i < 23; i++)
 		{
-			float tempMant = (mant >> (22 - i)) & 1;
+			float tempMant = mant >> (22 - i) & 1;
 			if (tempMant != 0)
 				for (int j = i; j >= 0 ; j--)
 				{
