@@ -1,8 +1,8 @@
-/* homework �5
+﻿/* homework №5
 singly linked list 
 Sergeev Evgeniy 171 gr*/
 
-#include "LinkedList.h"
+#include "header.h"
 
 int main()
 {
@@ -18,17 +18,17 @@ int main()
 		{
 			case 'a':
 				scanf("%d", &numb);
-				addLink(numb, &firstLink);
+				linkList_addFront(&firstLink, numb);
 				break;
 			case 'p':
-				displayLink(&firstLink);
+				linkList_display(&firstLink);
 				break;
 			case 'r':
 				scanf("%d", &numb);
-				deleteLink(numb, &firstLink);
+				linkList_delete(&firstLink, numb);
 				break;
 			case 'q':
-				cleanList(&firstLink);
+				linkList_clean(&firstLink);
 				exit(0);
 				break;
 		}
