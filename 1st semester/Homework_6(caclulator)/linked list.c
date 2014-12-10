@@ -1,13 +1,41 @@
 #include "header.h"
 
 
+void linkList_addBack(link** firstLink, int data)
+{
+	link *newLink = (link*)malloc(sizeof(link));
+	if (newLink == NULL)
+	{
+		printf("Lack of memory\n");
+		link *tempLink = *firstLink;
+		linkList_clean(&tempLink);
+		exit(0);
+	}
+	if (*firstLink == NULL)
+	{
+		newLink->next = *firstLink;
+		newLink->val = data;
+		*firstLink = newLink;
+	}
+	link *currentLink = *firstLink;
+	while (currentLink->next != NULL)
+	{
+		currentLink = currentLink->next;
+	}
+	link* temp = currentLink->next;
+	currentLink->next = newLink;
+	newLink->val = data;
+	newLink->next = temp;
+}
+
+
 void linkList_addFront(link** firstLink, int data)
 {
 	link *newLink = (link*)malloc(sizeof(link));
-	if (newLink == 0)
+	if (newLink == NULL)
 	{
 		printf("Lack of memory\n");
-		*tempLink = *firstLink;
+		link *tempLink = *firstLink;
 		linkList_clean(&tempLink);
 		exit(0);
 	}
@@ -16,14 +44,14 @@ void linkList_addFront(link** firstLink, int data)
 		*firstLink = newLink;
 }
 
-void linkList_display(link** firstLink)
+void linkList_display(link* firstLink)
 {
-	if (*firstLink == NULL)
+	if (firstLink == NULL)
 	{
 		printf("EMPTY\n");
 		return;
 	}
-	link *currentLink = *firstLink;
+	link *currentLink = firstLink;
 	while (currentLink)
 	{
 		printf("%d", currentLink->val);
@@ -94,8 +122,24 @@ void linkList_reverse(link **firstLink)
 	*firstLink = newLink;
 }
 
+link* linkList_getReversedList(link *firstLink)
+{
+	link *newLink = NULL;
+	link *currentLink = firstLink;
+	while (currentLink != 0)
+	{
+		linkList_addFront(&newLink, currentLink->val);
+		currentLink = currentLink->next;
+	}
+	return newLink;
+}
+
 void linkList_deleteLeadingZeroes(link **firstLink)
 {
+	if (*firstLink == NULL)
+	{
+		return;
+	}
 	link* currentLink = *firstLink;
 	while (currentLink->next != NULL)
 	{
@@ -108,4 +152,19 @@ void linkList_deleteLeadingZeroes(link **firstLink)
 			break;
 		}
 	}
+}
+
+int linkList_length(link *firstLink)
+{
+	int lengthOfList = 0;
+	if (firstLink == NULL)
+	{
+		return 0;
+	}
+	while (firstLink != NULL)
+	{
+		firstLink = firstLink->next;
+		lengthOfList++;
+	}
+	return lengthOfList;
 }

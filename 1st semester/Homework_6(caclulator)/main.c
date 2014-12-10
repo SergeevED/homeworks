@@ -1,13 +1,12 @@
 /* homework ¹6
-Addition and subtraction of long numbers
+Addition, subtraction, multiplication, division of long numbers
 Sergeev Evgeniy 171 gr*/
-
 
 #include "header.h"
 
 int main()
 {
-	printf("Calculator for long numbers\n'+', '-', '*' are supported\nNumbers and operations should be separated by space\nExample: a + b	(a, b  - integer numbers)\nEnter 'Q' to exit\n\n");
+	printf("Calculator for long numbers\n'+', '-', '*', '/' are supported\nNumbers and operations should be separated by space\nExample: a + b	(a, b  - integer numbers)\nEnter 'Q' to exit\n\n");
 	
 	while(true)
 	{
@@ -38,6 +37,9 @@ int main()
 						break;
 					case '*':
 						operation = '*';
+						break;
+					case '/':
+						operation = '/';
 						break;
 					case '+':
 						operation = '+';
@@ -76,6 +78,27 @@ int main()
 			secondNum.sign *= -1;
 		}
 		
+		if (operation == '/')
+		{
+			bool is_zero = true;
+			link* tempLink = secondNum.head;
+			while (tempLink != NULL)
+			{
+				if (tempLink->val != 0)
+				{
+					is_zero = false;
+					break;
+				}
+				tempLink = tempLink->next;
+			}
+			if (is_zero == true)
+			{
+				printf("Division by zero is impossible\n");
+				intLink_deleteNumbs(&firstNum, &secondNum, NULL);
+				exit(0);
+			}
+		}
+		
 		intLink resultNum;
 		resultNum = intLink_calcResult(firstNum, secondNum, operation);
 			
@@ -85,10 +108,9 @@ int main()
 		}
 		
 
-		linkList_display(&(resultNum.head));
+		linkList_display(resultNum.head);
 		intLink_deleteNumbs(&firstNum, &secondNum, &resultNum);
 	}
 	
-
 	return 0;
 }

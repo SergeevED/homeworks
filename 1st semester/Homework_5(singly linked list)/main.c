@@ -18,16 +18,17 @@ int main()
 		{
 			case 'a':
 				scanf("%d", &numb);
-				linkList_addFront(&firstLink, numb);
+				linkList_addBack(&firstLink, numb);
 				break;
 			case 'p':
-				linkList_display(&firstLink);
+				linkList_display(firstLink);
 				break;
 			case 'r':
 				scanf("%d", &numb);
 				linkList_delete(&firstLink, numb);
 				break;
 			case 'q':
+				linkList_reverse(&firstLink);
 				linkList_clean(&firstLink);
 				exit(0);
 				break;

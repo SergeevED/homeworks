@@ -5,7 +5,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 struct link
 {
@@ -19,9 +18,11 @@ struct intLink
 	link *head;
 };
 
+void linkList_addBack(link** firstLink, int data);
+
 void linkList_addFront(link** firstLink, int data);
 
-void linkList_display(link** firstLink);
+void linkList_display(link* firstLink);
 
 void linkList_delete(link** firstLink, int data);
 
@@ -29,7 +30,12 @@ void linkList_clean(link** firstLink);
 
 void linkList_reverse(link **firstLink);
 
+link* linkList_getReversedList(link* firstLink);
+
 void linkList_deleteLeadingZeroes(link **firstLink);
+
+int linkList_length(link *firstLink);
+
 
 intLink intLink_scanNum(bool* is_correct, char *operation);
 
@@ -41,6 +47,7 @@ intLink intLink_subtractNum(intLink firstNum, intLink secondNum);
 
 intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum);
 
+intLink intLink_divideNum(intLink dividend, intLink divider);
 
 void intLink_deleteNumbs(intLink *firstNum, intLink *secondNum, intLink *thirdNum);
 

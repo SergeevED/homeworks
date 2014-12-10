@@ -26,6 +26,7 @@ void linkList_addBack(link** firstLink, int data)
 	currentLink->next = newLink;
 	newLink->val = data;
 	newLink->next = temp;
+	
 }
 
 void linkList_addFront(link** firstLink, int data)
@@ -43,14 +44,14 @@ void linkList_addFront(link** firstLink, int data)
 		*firstLink = newLink;
 }
 
-void linkList_display(link** firstLink)
+void linkList_display(link* firstLink)
 {
-	if (*firstLink == NULL)
+	if (firstLink == NULL)
 	{
 		printf("EMPTY\n");
 		return;
 	}
-	link *currentLink = *firstLink;
+	link *currentLink = firstLink;
 	while (currentLink)
 	{
 		printf("%d", currentLink->val);

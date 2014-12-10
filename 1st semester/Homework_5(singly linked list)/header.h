@@ -1,8 +1,8 @@
 #ifndef _LINKEDLIST_H_
 #define _LINKEDLIST_H_
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 struct link
 {
@@ -14,7 +14,7 @@ void linkList_addBack(link** firstLink, int data);
 
 void linkList_addFront(link** firstLink, int data);
 
-void linkList_display(link** firstLink);
+void linkList_display(link* firstLink);
 
 void linkList_delete(link** firstLink, int data);
 

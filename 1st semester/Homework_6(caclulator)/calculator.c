@@ -66,6 +66,10 @@ intLink intLink_scanNum(bool *is_correct, char *operation)
 				*operation = '*';
 				return number;
 				break;
+			case '/':
+				*operation = '/';
+				return number;
+				break;
 			case '+':
 				*operation = '+';
 				return number;
@@ -109,7 +113,7 @@ intLink intLink_calcResult(intLink firstNum, intLink secondNum, char operation)
 	if ((firstNum.sign * secondNum.sign == 1) && (operation == '+' || operation == '-'))
 	{
 		resultNum = intLink_sumNum(firstNum, secondNum);
-		resultNum.sign = firstNum.sign;
+		resultNum.sign = secondNum.sign;
 	}
 	else if ((firstNum.sign * secondNum.sign == -1) && (operation == '+' || operation == '-'))
 	{
@@ -121,125 +125,24 @@ intLink intLink_calcResult(intLink firstNum, intLink secondNum, char operation)
 		resultNum = intLink_multiplicateNum(firstNum, secondNum);
 		resultNum.sign = firstNum.sign * secondNum.sign;
 	}
-
+	else if (operation == '/')
+	{
+		resultNum = intLink_divideNum(firstNum, secondNum);
+		resultNum.sign = firstNum.sign * secondNum.sign;
+	}
 	linkList_deleteLeadingZeroes(&(resultNum.head));
-
-	return resultNum;
-}
-
-
-
-intLink intLink_sumNum(intLink firstNum, intLink secondNum)
-{
-	intLink resultNum;
-	resultNum.head = NULL;
-	link *firstLink = firstNum.head;
-	link *secondLink = secondNum.head;
-	int temp = 0;
-	while(firstLink != NULL || secondLink != NULL)
+	if (resultNum.head != NULL)
 	{
-		if (firstLink != NULL) 
-		{
-			temp += firstLink->val;
-			firstLink = firstLink->next;
-		}
-		if (secondLink != NULL) 
-		{
-			temp += secondLink->val;
-			secondLink = secondLink->next;
-		}
-		linkList_addFront(&(resultNum.head), temp);
-		temp = 0;
-	}
-	linkList_addFront(&(resultNum.head), 0);
-	link* currentNum = resultNum.head;
-	
-	while(currentNum->next != NULL)
-	{
-		if (currentNum->next->val >= 10)
-		{
-			currentNum->next->val -= 10;
-			currentNum->val++;
-		}
-		if (currentNum->val >= 10)
-		{
-			currentNum = resultNum.head;
-			continue;
-		}
-		currentNum = currentNum->next;
-	}
-	return resultNum;
-}
-
-
-
-intLink intLink_subtractNum(intLink firstNum, intLink secondNum)
-{
-	intLink resultNum;
-	resultNum.head = NULL;
-	link *firstLink = firstNum.head;
-	link *secondLink = secondNum.head;
-	int temp = 0;
-	while(firstLink != NULL || secondLink != NULL)
-	{
-		if (firstLink != NULL) 
-		{
-			temp += firstLink->val;
-			firstLink = firstLink->next;
-		}
-		if (secondLink != NULL) 
-		{
-			temp -= secondLink->val;
-			secondLink = secondLink->next;
-		}
-		linkList_addFront(&(resultNum.head), temp);
-		temp = 0;
-	}
-	link *currentNum = resultNum.head;
-	while (currentNum != NULL)
-	{
-		if (currentNum->val > 0)
+		if ((*resultNum.head).val == 0)
 		{
 			resultNum.sign = 1;
-			break;
 		}
-		else if (currentNum->val < 0)
-		{
-			resultNum.sign = -1;
-			currentNum = resultNum.head;
-			while (currentNum != NULL)
-			{
-				currentNum->val *= -1;
-				currentNum = currentNum->next;
-			}
-			break;
-		}
-		else
-		{
-			currentNum = currentNum->next;
-		}
-	}
-	currentNum = resultNum.head;
-	while(currentNum->next != NULL)
-	{
-		if (currentNum->next->val < 0)
-		{
-			currentNum->val = currentNum->val - 1;
-			currentNum->next->val += 10;
-		}
-		if (currentNum->val < 0)
-		{
-			currentNum = resultNum.head;
-			continue;
-		}
-		
-		currentNum = currentNum->next;
 	}
 	return resultNum;
 }
 
 
-void intLink_deleteNumbs(intLink *firstNum, intLink *secondNum, intLink *thirdNum)
+void intLink_deleteNumbs(intLink *firstNum, intLink *secondNum, intLink *thirdNum)		//freeing memory
 {
 	if (firstNum != NULL)
 	{
@@ -272,59 +175,3 @@ void intLink_deleteNumbs(intLink *firstNum, intLink *secondNum, intLink *thirdNu
 }
 
 
-intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum)
-{
-	intLink resultNum;
-	resultNum.head = NULL;
-	link *firstLink = firstNum.head;
-	link *secondLink = secondNum.head;
-	int temp = 0;
-	while (firstLink != NULL || secondLink != NULL)
-	{
-		if (firstLink != NULL)
-		{
-			firstLink = firstLink->next;
-			linkList_addFront(&(resultNum.head), 0);
-		}
-		if (secondLink != NULL)
-		{
-			secondLink = secondLink->next;
-			linkList_addFront(&(resultNum.head), 0);
-		}
-	}
-
-	firstLink = firstNum.head;
-	secondLink = secondNum.head;
-	link *currentResLink = resultNum.head;
-	link *previousResLink = resultNum.head;
-	while (secondLink != NULL)
-	{
-		while (firstLink != NULL)
-		{
-			currentResLink->val += firstLink->val * secondLink->val;
-			firstLink = firstLink->next;
-			currentResLink = currentResLink->next;
-		}
-		previousResLink = previousResLink->next;
-		currentResLink = previousResLink;
-		firstLink = firstNum.head;
-		secondLink = secondLink->next;
-	}
-	
-	link *currentNum = resultNum.head;
-	while(currentNum->next != NULL)
-	{
-		if (currentNum->val >= 10)
-		{
-			currentNum->next->val += currentNum->val / 10;
-			currentNum->val %= 10;
-		}
-		currentNum = currentNum->next;
-	}
-	linkList_reverse(&(resultNum.head));
-	return resultNum;
-}
-
-
-	
-	
