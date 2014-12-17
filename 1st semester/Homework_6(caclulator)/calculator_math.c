@@ -1,4 +1,43 @@
-#include "header.h"
+#include "calculator_math.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+intLink intLink_calcResult(intLink firstNum, intLink secondNum, char operation)
+{
+	intLink resultNum;
+	resultNum.head = NULL;
+	if ((firstNum.sign * secondNum.sign == 1) && (operation == '+' || operation == '-'))
+	{
+		resultNum = intLink_sumNum(firstNum, secondNum);
+		resultNum.sign = secondNum.sign;
+	}
+	else if ((firstNum.sign * secondNum.sign == -1) && (operation == '+' || operation == '-'))
+	{
+		resultNum = intLink_subtractNum(firstNum, secondNum);
+		resultNum.sign *= firstNum.sign;
+	}
+	else if (operation == '*')
+	{
+		resultNum = intLink_multiplicateNum(firstNum, secondNum);
+		resultNum.sign = firstNum.sign * secondNum.sign;
+	}
+	else if (operation == '/')
+	{
+		resultNum = intLink_divideNum(firstNum, secondNum);
+		resultNum.sign = firstNum.sign * secondNum.sign;
+	}
+	linkList_deleteLeadingZeroes(&(resultNum.head));
+	if (resultNum.head)
+	{
+		if (!resultNum.head->val)
+		{
+			resultNum.sign = 1;
+		}
+	}
+	return resultNum;
+}
+
 
 intLink intLink_sumNum(intLink firstNum, intLink secondNum)
 {
@@ -7,14 +46,14 @@ intLink intLink_sumNum(intLink firstNum, intLink secondNum)
 	link *firstLink = firstNum.head;
 	link *secondLink = secondNum.head;
 	int temp = 0;
-	while(firstLink != NULL || secondLink != NULL)
+	while(firstLink || secondLink)
 	{
-		if (firstLink != NULL) 
+		if (firstLink) 
 		{
 			temp += firstLink->val;
 			firstLink = firstLink->next;
 		}
-		if (secondLink != NULL) 
+		if (secondLink) 
 		{
 			temp += secondLink->val;
 			secondLink = secondLink->next;
@@ -25,7 +64,7 @@ intLink intLink_sumNum(intLink firstNum, intLink secondNum)
 	linkList_addFront(&(resultNum.head), 0);
 	link* currentNum = resultNum.head;
 	
-	while(currentNum->next != NULL)
+	while(currentNum->next)
 	{
 		if (currentNum->next->val >= 10)
 		{
@@ -43,7 +82,6 @@ intLink intLink_sumNum(intLink firstNum, intLink secondNum)
 }
 
 
-
 intLink intLink_subtractNum(intLink firstNum, intLink secondNum)
 {
 	intLink resultNum;
@@ -51,14 +89,14 @@ intLink intLink_subtractNum(intLink firstNum, intLink secondNum)
 	link *firstLink = firstNum.head;
 	link *secondLink = secondNum.head;
 	int temp = 0;
-	while(firstLink != NULL || secondLink != NULL)
+	while(firstLink || secondLink)
 	{
-		if (firstLink != NULL) 
+		if (firstLink) 
 		{
 			temp += firstLink->val;
 			firstLink = firstLink->next;
 		}
-		if (secondLink != NULL) 
+		if (secondLink) 
 		{
 			temp -= secondLink->val;
 			secondLink = secondLink->next;
@@ -67,7 +105,7 @@ intLink intLink_subtractNum(intLink firstNum, intLink secondNum)
 		temp = 0;
 	}
 	link *currentNum = resultNum.head;
-	while (currentNum != NULL)
+	while (currentNum)
 	{
 		if (currentNum->val > 0)
 		{
@@ -78,7 +116,7 @@ intLink intLink_subtractNum(intLink firstNum, intLink secondNum)
 		{
 			resultNum.sign = -1;
 			currentNum = resultNum.head;
-			while (currentNum != NULL)
+			while (currentNum)
 			{
 				currentNum->val *= -1;
 				currentNum = currentNum->next;
@@ -90,12 +128,12 @@ intLink intLink_subtractNum(intLink firstNum, intLink secondNum)
 			currentNum = currentNum->next;
 		}
 	}
-	if (resultNum.sign != 1 && resultNum.sign != -1)	//make sign '+' in case of zero
+	if (resultNum.sign != 1 && resultNum.sign != -1)			//make sign '+' in case of zero
 	{
 		resultNum.sign = 1;
 	}
 	currentNum = resultNum.head;
-	while(currentNum->next != NULL)
+	while(currentNum->next)
 	{
 		if (currentNum->next->val < 0)
 		{
@@ -122,14 +160,14 @@ intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum)
 	link *firstLink = firstNum.head;
 	link *secondLink = secondNum.head;
 	int temp = 0;
-	while (firstLink != NULL || secondLink != NULL)
+	while (firstLink || secondLink)
 	{
-		if (firstLink != NULL)
+		if (firstLink)
 		{
 			firstLink = firstLink->next;
 			linkList_addFront(&(resultNum.head), 0);
 		}
-		if (secondLink != NULL)
+		if (secondLink)
 		{
 			secondLink = secondLink->next;
 			linkList_addFront(&(resultNum.head), 0);
@@ -140,9 +178,9 @@ intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum)
 	secondLink = secondNum.head;
 	link *currentResLink = resultNum.head;
 	link *previousResLink = resultNum.head;
-	while (secondLink != NULL)
+	while (secondLink)
 	{
-		while (firstLink != NULL)
+		while (firstLink)
 		{
 			currentResLink->val += firstLink->val * secondLink->val;
 			firstLink = firstLink->next;
@@ -154,7 +192,7 @@ intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum)
 		secondLink = secondLink->next;
 	}
 	link *currentNum = resultNum.head;
-	while(currentNum->next != NULL)
+	while(currentNum->next)
 	{
 		if (currentNum->val >= 10)
 		{
@@ -185,7 +223,7 @@ intLink intLink_divideNum(intLink dividend, intLink divider)
 	int lengthOfPartialDividend = linkList_length(partialDividend.head);
 	for (int i = 0; i < lengthOfDivider - lengthOfPartialDividend; i++)
 	{
-		if (currentDividendDigit != NULL)
+		if (currentDividendDigit)
 		{
 			linkList_addFront(&(partialDividend.head), currentDividendDigit->val);
 			currentDividendDigit = currentDividendDigit->next;
@@ -194,14 +232,13 @@ intLink intLink_divideNum(intLink dividend, intLink divider)
 	divider.sign = -1;
 	intLink tempNum;
 	tempNum = intLink_calcResult(partialDividend, divider, '+');
-	if ((tempNum.sign == -1) && (currentDividendDigit != NULL))
+	if ((tempNum.sign == -1) && (currentDividendDigit))
 	{
 		linkList_addFront(&(partialDividend.head), currentDividendDigit->val);
 		currentDividendDigit = currentDividendDigit->next;
 	}
-	intLink_deleteNumbs(&tempNum, NULL, NULL);
+	intLink_deleteNumb(&tempNum);
 
-	bool flag = true;
 	while (true)
 	{
 		int j = 1;
@@ -224,12 +261,7 @@ intLink intLink_divideNum(intLink dividend, intLink divider)
 				break;
 			}
 		}
-
-		if (flag == false)
-		{
-			break;
-		}
-		if (currentDividendDigit != NULL)
+		if (currentDividendDigit)
 		{
 			linkList_addFront(&(partialDividend.head), currentDividendDigit->val);
 			currentDividendDigit = currentDividendDigit->next;
@@ -242,30 +274,31 @@ intLink intLink_divideNum(intLink dividend, intLink divider)
 	divider.sign = dividerSign;
 	
 
-	/*if (dividend.sign == -1)		//incrementation resultNum in case of negative remainder
+	if (dividend.sign == -1)		//incrementation resultNum in case of negative remainder
 		{
-			bool remainderIsZero = true;
+			int remainderIsZero = 1;
 			link* tempLink1 = partialDividend.head;
-			while (tempLink1 != NULL)
+			while (tempLink1)
 			{
-				if (tempLink1->val != 0)
+				if (tempLink1->val)
 				{
-					remainderIsZero = false;
+					remainderIsZero = 0;
 					break;
 				}
 				tempLink1 = tempLink1->next;
 			}
-			if (remainderIsZero == false)
+			if (!remainderIsZero)
 			{
 				link* tempLink2 = resultNum.head;
-				while (tempLink2->next != NULL)
+				while (tempLink2->next)
 				{
 					tempLink2 = tempLink2->next;
 				}
 				(tempLink2->val)++;
 			}
-		}*/
+		}
 
-	intLink_deleteNumbs(&partialDividend, &reversedDividend, NULL);
+	intLink_deleteNumb(&partialDividend);
+	intLink_deleteNumb(&reversedDividend);
 	return resultNum;
 }

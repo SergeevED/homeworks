@@ -1,24 +1,24 @@
-#include "header.h"
+#include "linked list.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 
 void linkList_addBack(link** firstLink, int data)
 {
 	link *newLink = (link*)malloc(sizeof(link));
-	if (newLink == NULL)
+	if (!newLink)
 	{
 		printf("Lack of memory\n");
-		link *tempLink = *firstLink;
-		linkList_clean(&tempLink);
-		exit(0);
+		return;
 	}
-	if (*firstLink == NULL)
+	if (!*firstLink)
 	{
 		newLink->next = *firstLink;
 		newLink->val = data;
 		*firstLink = newLink;
 	}
 	link *currentLink = *firstLink;
-	while (currentLink->next != NULL)
+	while (currentLink->next)
 	{
 		currentLink = currentLink->next;
 	}
@@ -32,12 +32,10 @@ void linkList_addBack(link** firstLink, int data)
 void linkList_addFront(link** firstLink, int data)
 {
 	link *newLink = (link*)malloc(sizeof(link));
-	if (newLink == NULL)
+	if (!newLink)
 	{
 		printf("Lack of memory\n");
-		link *tempLink = *firstLink;
-		linkList_clean(&tempLink);
-		exit(0);
+		return;
 	}
 		newLink->next = *firstLink;
 		newLink->val = data;
@@ -46,7 +44,7 @@ void linkList_addFront(link** firstLink, int data)
 
 void linkList_display(link* firstLink)
 {
-	if (firstLink == NULL)
+	if (!firstLink)
 	{
 		printf("EMPTY\n");
 		return;
@@ -96,7 +94,7 @@ void linkList_delete(link** firstLink, int data)
 
 void linkList_clean(link** firstLink)
 {
-	if (*firstLink == NULL)
+	if (!*firstLink)
 	{
 		return;
 	}
@@ -113,7 +111,7 @@ void linkList_reverse(link **firstLink)
 {
 	link *newLink = NULL;
 	link *currentLink = *firstLink;
-	while (currentLink != 0)
+	while (currentLink)
 	{
 		linkList_addFront(&newLink, currentLink->val);
 		currentLink = currentLink->next;
@@ -126,7 +124,7 @@ link* linkList_getReversedList(link *firstLink)
 {
 	link *newLink = NULL;
 	link *currentLink = firstLink;
-	while (currentLink != 0)
+	while (currentLink)
 	{
 		linkList_addFront(&newLink, currentLink->val);
 		currentLink = currentLink->next;
@@ -136,14 +134,14 @@ link* linkList_getReversedList(link *firstLink)
 
 void linkList_deleteLeadingZeroes(link **firstLink)
 {
-	if (*firstLink == NULL)
+	if (!*firstLink)
 	{
 		return;
 	}
 	link* currentLink = *firstLink;
-	while (currentLink->next != NULL)
+	while (currentLink->next)
 	{
-		if (currentLink->val == 0)
+		if (!currentLink->val)
 		{
 			linkList_delete(&*firstLink, 0);
 		}
@@ -157,11 +155,11 @@ void linkList_deleteLeadingZeroes(link **firstLink)
 int linkList_length(link *firstLink)
 {
 	int lengthOfList = 0;
-	if (firstLink == NULL)
+	if (!firstLink)
 	{
 		return 0;
 	}
-	while (firstLink != NULL)
+	while (firstLink)
 	{
 		firstLink = firstLink->next;
 		lengthOfList++;
