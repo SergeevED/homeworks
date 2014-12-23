@@ -2,22 +2,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-intLink intLink_scan(int *is_correct, char *operation)
+struct intLink intLink_scan(int *is_correct, int *endOfFileScanned, char *operation)
 {
-	intLink number;
+	struct intLink number;
 	number.head = NULL;
-	char c = '\n';
+	number.sign = 0;
+	char c;
+	char c1;
+	c = ' ';
 
 	while (c == ' ' || c == '\n')			
 	{
-		scanf("%c", &c);
+		c = (signed char)getchar();
 		switch (c)
 		{
-			case 'Q':
-				printf("You quit the program\n");
-				*is_correct = 0;
-				return number;
-				break;
 			case ' ':
 			case '\n':
 				break;
@@ -28,10 +26,19 @@ intLink intLink_scan(int *is_correct, char *operation)
 				*operation = c;
 				return number;
 				break;
+			case EOF:
+				*endOfFileScanned = 1;
+				return number;
+				break;
 			case '-':
-				char c1;
-				scanf("%c", &c1);
-				if (c1 == ' ')
+				c1 = (signed char)getchar();
+				if (c1 == EOF)
+				{
+					*endOfFileScanned = 1;
+					*operation = c;
+					return number;
+				}
+				else if (c1 == ' ' || c1 == '\n')
 				{
 					*operation = c;
 					return number;
@@ -43,7 +50,7 @@ intLink intLink_scan(int *is_correct, char *operation)
 				}
 				else
 				{
-					printf("Unexpected sumbol '%c'\n", c);
+					printf("Unknown command\n");
 					*is_correct = 0;
 					return number;
 				}
@@ -62,7 +69,7 @@ intLink intLink_scan(int *is_correct, char *operation)
 				linkList_addFront(&(number.head), c - '0');
 				break;
 			default:
-				printf("Unexpected sumbol '%c'\n", c);
+				printf("Unknown command\n");
 				*is_correct = 0;
 				return number;
 				break;
@@ -72,12 +79,11 @@ intLink intLink_scan(int *is_correct, char *operation)
 	c = '0';
 	while ((c >= '0') && (c <= '9'))
 	{
-		scanf("%c", &c);
+		c = (signed char)getchar();
 		switch (c)
 		{
-			case 'Q':
-				printf("You quit the program");
-				is_correct = 0;
+			case EOF:
+				*endOfFileScanned = 1;
 				return number;
 				break;
 			case ' ':
@@ -107,7 +113,7 @@ intLink intLink_scan(int *is_correct, char *operation)
 }
 
 
-void intLink_deleteNumb(intLink *firstNum)		//freeing memory
+void intLink_deleteNumb(struct intLink *firstNum)		//freeing memory
 {
 	if (firstNum)
 	{
@@ -118,4 +124,5 @@ void intLink_deleteNumb(intLink *firstNum)		//freeing memory
 			firstNum->head = 0;
 		}
 	}
+	return;
 }

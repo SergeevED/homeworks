@@ -9,78 +9,67 @@ Sergeev Evgeniy 171 gr*/
 
 int main()
 {
-	printf("Calculator for long numbers\n'+', '-', '*', '/' are supported\nNumbers and operations should be separated by space\n"
-			"Mathematical expression must end with a '='\nExample: a b + c d * - =	(a, b, c, d  - integer numbers)\nEnter 'Q' to exit\n\n");
-	intStack *stackHead = NULL;
+	printf("Calculator for long numbers\n'+', '-', '*', '/', '=' are supported\nNumbers and operations should be separated by 'Enter' or 'Space'\n"
+			"Example: a b + c d * - =	(a, b, c, d  - integer numbers)\n\n");
+	struct intStack *stackHead = NULL;
 	while(1)
 	{
 		char operation = '0';
+		int endOfFileScanned = 0;
 		int is_correct = 1;							//true = 1, false = 0
 		char c = '0';
 
-		intLink tempNum; 
-		tempNum = intLink_scan(&is_correct, &operation);
+		struct intLink tempNum; 
+		tempNum = intLink_scan(&is_correct, &endOfFileScanned, &operation);
 		if (!is_correct)
 		{
 			intLink_deleteNumb(&tempNum);
 			stack_clean(&stackHead);
-			exit(0);
+			exit(1);
 		}
-
-		if (operation == '0')
+		if (tempNum.head)
 		{
 			stack_push(&stackHead, &tempNum);
-			continue;
 		}
 		else if (operation == '=')
 		{
 			if (!stackHead)
 			{
-				printf("'=' scanned, though operation was expected\n");
+				printf("Not enough arguments\n");
 				stack_clean(&stackHead);
-				exit(0);
+				exit(1);
 			}
-			if (stackHead)
+			else
 			{
-				if (stackHead->next)
-				{
-					printf("'=' scanned, though operation was expected\n");
-					stack_clean(&stackHead);
-					exit(0);
-				}
-				linkList_reverse(&stackHead->longVal.head);
-				if (stackHead->longVal.sign == -1 && stackHead->longVal.head->val != 0)
+				struct link* printedLink = linkList_getReversedList(stackHead->longVal.head);
+				if (stackHead->longVal.sign == -1 && stackHead->longVal.head->val)
 				{
 					printf("-");
 				}
-				linkList_display(stackHead->longVal.head);
-				stack_clean(&stackHead);
+				linkList_display(printedLink);
+				linkList_clean(&printedLink);
 			}
-			stackHead = NULL;
-			continue;
 		}
-		else
+		else if (operation == '+' || operation == '-' || operation == '*' || operation == '/')
 		{
-			intLink secondNum = stack_pop(&stackHead);
-			intLink firstNum = stack_pop(&stackHead);
+			struct intLink firstNum = stack_pop(&stackHead);
+			struct intLink secondNum = stack_pop(&stackHead);
 			if (!firstNum.head || !secondNum.head)
 			{
-				printf("Operation has been scanned though number was expected\n");
+				printf("Not enough arguments\n");
 				intLink_deleteNumb(&firstNum);
 				intLink_deleteNumb(&secondNum);
 				stack_clean(&stackHead);
-				exit(0);
+				exit(1);
 			}
-
 			if (operation == '-')
 			{
 				secondNum.sign *= -1;
 			}
-		
 			if (operation == '/')
 			{
 				int is_zero = 1;
-				link* tempLink = secondNum.head;
+				struct link* tempLink = secondNum.head;
 				while (tempLink)
 				{
 					if (tempLink->val)
@@ -92,19 +81,53 @@ int main()
 				}
 				if (is_zero)
 				{
-					printf("Division by zero is impossible\n");
+					printf("Division by zero\n");
 					intLink_deleteNumb(&firstNum);
 					intLink_deleteNumb(&secondNum);
 					stack_clean(&stackHead);
-					exit(0);
+					exit(1);
 				}
 			}
-
-			intLink resultNum = intLink_calcResult(firstNum, secondNum, operation);
+			struct intLink resultNum = intLink_calcResult(firstNum, secondNum, operation);
 			linkList_reverse(&resultNum.head);
 			stack_push(&stackHead, &resultNum);
 			intLink_deleteNumb(&firstNum);
 			intLink_deleteNumb(&secondNum);
+		}
+		if (endOfFileScanned)
+		{
+			if (!stackHead)
+			{
+				exit(0);
+			}
+			else
+			{
+				struct intStack *currentNumb = stackHead;
+				printf("[");
+				struct link* printedLink = linkList_getReversedList(currentNumb->longVal.head);
+				if (currentNumb->longVal.sign == -1 && currentNumb->longVal.head->val)
+				{
+					printf("-");
+				}
+				linkList_displayWithoutNewline(printedLink);
+				linkList_clean(&printedLink);
+				currentNumb = currentNumb->next;
+				while (currentNumb)
+				{
+					printf("; ");
+					struct link* printedLink = linkList_getReversedList(currentNumb->longVal.head);
+					if (currentNumb->longVal.sign == -1 && currentNumb->longVal.head->val)
+					{
+						printf("-");
+					}
+					linkList_displayWithoutNewline(printedLink);
+					linkList_clean(&printedLink);
+					currentNumb = currentNumb->next;
+				}
+				printf("]\n");
+				stack_clean(&stackHead);
+				exit(0);
+			}
 		}
 	}
 	return 0;

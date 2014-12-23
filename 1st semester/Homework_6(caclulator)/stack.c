@@ -3,9 +3,9 @@
 #include <stdlib.h>
 
 
-void stack_push(intStack **stackHead, intLink *number)
+void stack_push(struct intStack **stackHead, struct intLink *number)
 {
-	intStack *newLink = (intStack*)malloc(sizeof(intStack));
+	struct intStack *newLink = (struct intStack*)malloc(sizeof(struct intStack));
 	if (!newLink)
 	{
 		printf("Lack of memory\n");
@@ -14,38 +14,40 @@ void stack_push(intStack **stackHead, intLink *number)
 	newLink->next = *stackHead;
 	newLink->longVal = *number;
 	*stackHead = newLink;
+	return;
 }
 
-intLink stack_pop(intStack **stackHead)
+struct intLink stack_pop(struct intStack **stackHead)
 {
 	if (!*stackHead)
 	{
-		intLink tempVal;
+		struct intLink tempVal;
 		tempVal.head = NULL;
 		tempVal.sign = 0;
 		return tempVal;
 	}
-	intStack *temp = *stackHead;
-	intLink firstVal = (*stackHead)->longVal;
+	struct intStack *temp = *stackHead;
+	struct intLink firstVal = (*stackHead)->longVal;
 	*stackHead = (*stackHead)->next;
 	free(temp);
 	return firstVal;
 }
 
-void stack_clean(intStack **stackHead)
+void stack_clean(struct intStack **stackHead)
 {
 	if (!*stackHead)
 	{
 		return;
 	}
-	intStack *currentLink = *stackHead;
+	struct intStack *currentLink = *stackHead;
 	while (currentLink)
 	{
 		intLink_deleteNumb(&currentLink->longVal);
-		intStack *temp = currentLink;
+		struct intStack *temp = currentLink;
 		currentLink = currentLink->next;
 		free(temp);
 	}
+	return;
 }
 
 

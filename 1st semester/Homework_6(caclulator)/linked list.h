@@ -1,23 +1,25 @@
 struct link
 {
-	short val;
-	link *next;
-};
+	int val;
+	struct link *next;
+} firstLink;
 
-void linkList_addBack(link** firstLink, int data);
+void linkList_addBack(struct link** firstLink, int data);
 
-void linkList_addFront(link** firstLink, int data);
+void linkList_addFront(struct link** firstLink, int data);
 
-void linkList_display(link* firstLink);
+void linkList_display(struct link* firstLink);
 
-void linkList_delete(link** firstLink, int data);
+void linkList_displayWithoutNewline(struct link* firstLink);
 
-void linkList_clean(link** firstLink);
+void linkList_delete(struct link** firstLink, int data);
 
-void linkList_reverse(link **firstLink);
+void linkList_clean(struct link** firstLink);
 
-link* linkList_getReversedList(link* firstLink);
+void linkList_reverse(struct link **firstLink);
 
-void linkList_deleteLeadingZeroes(link **firstLink);
+struct link* linkList_getReversedList(struct link* firstLink);
 
-int linkList_length(link *firstLink);
+void linkList_deleteLeadingZeroes(struct link **firstLink);
+
+int linkList_length(struct link *firstLink);

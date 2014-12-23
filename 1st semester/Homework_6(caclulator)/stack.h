@@ -2,13 +2,13 @@
 
 struct intStack
 {
-	intLink longVal;
-	intStack *next;
-};
+	struct intLink longVal;
+	struct intStack *next;
+} stackHead;
 
-intLink stack_pop(intStack **stackHead);
+struct intLink stack_pop(struct intStack **stackHead);
 
-void stack_push(intStack **stackHead, intLink *link);
+void stack_push(struct intStack **stackHead, struct intLink *firstLink);
 
-void stack_clean(intStack **stackHead);
+void stack_clean(struct intStack **stackHead);
 

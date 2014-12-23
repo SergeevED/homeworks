@@ -3,10 +3,10 @@
 struct intLink
 {
 	short sign;
-	link *head;
-};
+	struct link *head;
+} firstNum;
 
 
-intLink intLink_scan(int *is_correct, char *operation);
+struct intLink intLink_scan(int *is_correct, int *endOfFileScanned, char *operation);
 
-void intLink_deleteNumb(intLink *firstNum);
+void intLink_deleteNumb(struct intLink *firstNum);

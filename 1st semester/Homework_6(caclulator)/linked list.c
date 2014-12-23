@@ -3,9 +3,9 @@
 #include <stdlib.h>
 
 
-void linkList_addBack(link** firstLink, int data)
+void linkList_addBack(struct link** firstLink, int data)
 {
-	link *newLink = (link*)malloc(sizeof(link));
+	struct link *newLink = (struct link*)malloc(sizeof(struct link));
 	if (!newLink)
 	{
 		printf("Lack of memory\n");
@@ -17,21 +17,22 @@ void linkList_addBack(link** firstLink, int data)
 		newLink->val = data;
 		*firstLink = newLink;
 	}
-	link *currentLink = *firstLink;
+	struct link *currentLink = *firstLink;
 	while (currentLink->next)
 	{
 		currentLink = currentLink->next;
 	}
-	link* temp = currentLink->next;
+	struct link* temp = currentLink->next;
 	currentLink->next = newLink;
 	newLink->val = data;
 	newLink->next = temp;
+	return;
 }
 
 
-void linkList_addFront(link** firstLink, int data)
+void linkList_addFront(struct link** firstLink, int data)
 {
-	link *newLink = (link*)malloc(sizeof(link));
+	struct link *newLink = (struct link*)malloc(sizeof(struct link));
 	if (!newLink)
 	{
 		printf("Lack of memory\n");
@@ -40,25 +41,43 @@ void linkList_addFront(link** firstLink, int data)
 		newLink->next = *firstLink;
 		newLink->val = data;
 		*firstLink = newLink;
+		return;
 }
 
-void linkList_display(link* firstLink)
+void linkList_display(struct link* firstLink)
 {
 	if (!firstLink)
 	{
 		printf("EMPTY\n");
 		return;
 	}
-	link *currentLink = firstLink;
+	struct	link *currentLink = firstLink;
 	while (currentLink)
 	{
 		printf("%d", currentLink->val);
 		currentLink = currentLink->next;
 	}
 	printf("\n");
+	return;
 }
 
-void linkList_delete(link** firstLink, int data)
+void linkList_displayWithoutNewline(struct link* firstLink)
+{
+	if (!firstLink)
+	{
+		printf("EMPTY\n");
+		return;
+	}
+	struct	link *currentLink = firstLink;
+	while (currentLink)
+	{
+		printf("%d", currentLink->val);
+		currentLink = currentLink->next;
+	}
+	return;
+}
+
+void linkList_delete(struct link** firstLink, int data)
 {
 	if ((*firstLink) == NULL || ((*firstLink)->val == data && (*firstLink)->next == 0) )
 	{
@@ -66,14 +85,14 @@ void linkList_delete(link** firstLink, int data)
 		return;
 	}
 
-	link *currentLink = (*firstLink)->next;
-	link *previousLink = *firstLink;
+	struct link *currentLink = (*firstLink)->next;
+	struct link *previousLink = *firstLink;
 
 	if ((*firstLink)->val == data)
 	{
 		(*firstLink)->val = currentLink->val;
 		(*firstLink)->next = currentLink->next;
-		link *temp = currentLink;
+		struct link *temp = currentLink;
 		free(temp);
 		return;
 	}
@@ -83,34 +102,36 @@ void linkList_delete(link** firstLink, int data)
 		if (currentLink->val == data)
 		{
 			previousLink->next = currentLink->next;
-			link *temp = currentLink;
+			struct link *temp = currentLink;
 			free(temp);
 			return;
 		}
 		previousLink = previousLink->next;
 		currentLink = currentLink->next;
 	}
+	return;
 }
 
-void linkList_clean(link** firstLink)
+void linkList_clean(struct link** firstLink)
 {
 	if (!*firstLink)
 	{
 		return;
 	}
-	link *currentLink = *firstLink;
+	struct link *currentLink = *firstLink;
 	while (currentLink)
 	{
-		link *temp = currentLink;
+		struct link *temp = currentLink;
 		currentLink = currentLink->next;
 		free(temp);
 	}
+	return;
 }
 
-void linkList_reverse(link **firstLink)
+void linkList_reverse(struct link **firstLink)
 {
-	link *newLink = NULL;
-	link *currentLink = *firstLink;
+	struct link *newLink = NULL;
+	struct link *currentLink = *firstLink;
 	while (currentLink)
 	{
 		linkList_addFront(&newLink, currentLink->val);
@@ -118,12 +139,13 @@ void linkList_reverse(link **firstLink)
 	}
 	linkList_clean(&*firstLink);
 	*firstLink = newLink;
+	return;
 }
 
-link* linkList_getReversedList(link *firstLink)
+struct link* linkList_getReversedList(struct link *firstLink)
 {
-	link *newLink = NULL;
-	link *currentLink = firstLink;
+	struct link *newLink = NULL;
+	struct link *currentLink = firstLink;
 	while (currentLink)
 	{
 		linkList_addFront(&newLink, currentLink->val);
@@ -132,13 +154,13 @@ link* linkList_getReversedList(link *firstLink)
 	return newLink;
 }
 
-void linkList_deleteLeadingZeroes(link **firstLink)
+void linkList_deleteLeadingZeroes(struct link **firstLink)
 {
 	if (!*firstLink)
 	{
 		return;
 	}
-	link* currentLink = *firstLink;
+	struct link* currentLink = *firstLink;
 	while (currentLink->next)
 	{
 		if (!currentLink->val)
@@ -150,9 +172,10 @@ void linkList_deleteLeadingZeroes(link **firstLink)
 			break;
 		}
 	}
+	return;
 }
 
-int linkList_length(link *firstLink)
+int linkList_length(struct link *firstLink)
 {
 	int lengthOfList = 0;
 	if (!firstLink)

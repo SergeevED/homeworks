@@ -1,13 +1,13 @@
 #include "calculator.h"
 
 
-intLink intLink_calcResult(intLink firstNum, intLink secondNum, char operation);
+struct intLink intLink_calcResult(struct intLink firstNum, struct intLink secondNum, char operation);
 
-intLink intLink_sumNum(intLink firstNum, intLink secondNum);
+struct intLink intLink_sumNum(struct intLink firstNum, struct intLink secondNum);
 
-intLink intLink_subtractNum(intLink firstNum, intLink secondNum);
+struct intLink intLink_subtractNum(struct intLink firstNum, struct intLink secondNum);
 
-intLink intLink_multiplicateNum(intLink firstNum, intLink secondNum);
+struct intLink intLink_multiplicateNum(struct intLink firstNum, struct intLink secondNum);
 
-intLink intLink_divideNum(intLink dividend, intLink divider);
+struct intLink intLink_divideNum(struct intLink dividend, struct intLink divider);
 
