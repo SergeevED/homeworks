@@ -28,7 +28,7 @@ let rec remove binTree x =
       |Void -> Void
       |Node(ls, rs, ks) -> Node(l, remove r ks, ks) 
 
-let rec printLCR (binTree : tree) = 
+let rec printLCR binTree = 
   match binTree with
   |Void -> ()
   |Node(l, r, k) -> 
@@ -37,7 +37,7 @@ let rec printLCR (binTree : tree) =
     (printLCR r)
   ()
 
-let rec printLRC (binTree : tree) = 
+let rec printLRC binTree = 
   match binTree with
   |Void -> ()
   |Node(l, r, k) -> 
@@ -46,11 +46,11 @@ let rec printLRC (binTree : tree) =
     printf "%i " k
   ()
 
-let rec printCLR (binTree : tree) = 
+let rec printCLR binTree = 
   match binTree with
   |Void -> ()
   |Node(l, r, k) -> 
     printf "%i " k
     (printCLR l)
     (printCLR r)
-  ()
+ ()
