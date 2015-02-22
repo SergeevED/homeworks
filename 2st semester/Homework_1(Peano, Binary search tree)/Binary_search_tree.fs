@@ -56,12 +56,46 @@ let rec printCLR (binTree : tree) =
     (printCLR r)
   ()
 
+let rec printTree (binTree : tree) =
+  match binTree with
+  | Void -> ()
+  | Node(l, r, k) ->
+    if l <> Void then
+      printf "{" 
+      printTree l
+      printf "}"
+    else
+      printf "Void"
+    printf ", %i, " k
+    if r <> Void then
+      printf "{"
+      printTree r
+      printf "}"
+    else
+      printf "Void"
+  ()
+
 [<EntryPoint>]
 let main args = 
-  let t = (insert (insert (insert (remove (remove (insert (insert (insert (insert Void 5) 3) 7) 9) 9) 5) 8) 2) 6) 
+  printf "adding 5, 3, 7, 9\n"
+  let t = (insert (insert (insert (insert Void 5) 3) 7) 9)
+  printTree t
+  printf "\n"
+  printf "deleting 9, 5\n"
+  let t = (remove (remove t 9) 5)
+  printTree t
+  printf "\n"
+  printf "adding 8, 2, 6\n"
+  let t = (insert (insert (insert t 8) 2) 6)
+  printTree t
+  printf "\n"
+  printf "LCR: "
   printLCR t
   printf "\n"
+  printf "CLR: "
   printCLR t
   printf "\n"
+  printf "LRC: "
   printLRC t
+  printf "\n"
   0
