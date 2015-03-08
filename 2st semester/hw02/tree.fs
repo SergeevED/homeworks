@@ -13,6 +13,36 @@ let rec insert binTree x =
     | a when a > 0 -> Node(l, insert r x, k)
     | _ -> Node(l, r, k)
 
+let rec remove binTree x =
+  let rec takeSmallestLeaf binTree =
+    match binTree with
+    | Void -> Void
+    | Node(l, r, k) ->
+      if l = Void then binTree 
+      else takeSmallestLeaf l  
+  match binTree with
+  | Void -> Void
+  | Node(l, r, k) ->
+    if x < k then Node(remove l x, r, k)
+    elif x > k then Node(l, remove r x, k)
+    else
+      if l = Void then r
+      elif r = Void then l
+      else 
+        let smallestLeaf = takeSmallestLeaf r
+        match smallestLeaf with
+        | Void -> Void
+        | Node(ls, rs, ks) -> Node(l, remove r ks, ks)
+
+let rec printLCR binTree = 
+  match binTree with
+  | Void -> ()
+  | Node(l, r, k) -> 
+    (printLCR l)
+    printf "%A " k
+    (printLCR r)
+  ()
+
 let rec printTree binTree =
   match binTree with
   | Void -> ()
@@ -42,31 +72,20 @@ let rec foldTree f acc binTree =
   | Void -> acc
   | Node(l, r, k) -> f (foldTree f acc l) k (foldTree f acc r)
 
-let rec sumTree (binTree : Tree<int>) : Option<int> = 
-  match binTree with
-  | Void -> None
-  | Node(l, r, k) ->
-    let btree = foldTree (fun lacc acc racc -> lacc + acc + racc) 0 binTree
-    Some btree
+let rec sumTree binTree = foldTree (fun lacc acc racc -> lacc + acc + racc) 0 binTree
 
-let rec minTree (binTree : Tree<'A>) : Option<'A> = 
-  match binTree with
-  | Void -> None
-  | Node(l, r, k) ->
-    let btree = foldTree (fun lacc acc racc -> 
-      if lacc < acc then
-        if lacc < racc then lacc
-        else racc
-      else
-        if acc < racc then acc
-        else racc) k binTree
-    Some btree
+let minElem lacc acc racc =
+  match lacc with
+  | None -> Some acc
+  | _ -> lacc
+
+let rec minTree binTree = foldTree minElem None binTree
 
 let rec copyTree binTree = foldTree (fun lacc acc racc -> Node(lacc, racc, acc)) Void binTree
 
 [<EntryPoint>]
 let main args = 
-  let tree = (insert (insert (insert (insert Void 5) 3) 7) 9)
+  let tree = (insert (insert (insert (insert Void 5) 3) 8) 10)
   printf "tree "
   printTree tree
   printf "\n"
@@ -77,14 +96,12 @@ let main args =
   printf "\n"
 
   let sum = sumTree tree
-  match sum with
-  | None -> printf "None\n"
-  | Some a ->  printf "sum of elements %d\n" a
+  printf "sum of elements %d\n" sum
 
   let min = minTree tree
   match min with
-  | None -> printf "None\n"
   | Some a -> printf "minimal element %d\n" a
+  | _ -> printf "Empty\n"
 
   let copiedTree = copyTree tree
   printf "copied tree " 

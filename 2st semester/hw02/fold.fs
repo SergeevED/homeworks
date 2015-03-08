@@ -7,11 +7,16 @@ let rec fold f acc list =
   | [] -> acc
   | elem :: list -> fold f (f acc elem) list
 
+let rec foldBack f list acc =
+  match list with
+  | [] -> acc
+  | elem :: list -> f elem (foldBack f list acc)
+
 let reverseList list = fold (fun acc elem -> elem :: acc) [] list
 
-let filterFold f list = fold (fun acc elem -> if f(elem) = true then acc @ [elem] else acc) [] list
+let filterFold f list = foldBack (fun elem acc -> if (f elem) = true then elem :: acc else acc) list []
 
-let mapFold f list = fold (fun acc elem -> acc @ [f elem]) [] list
+let mapFold f list = foldBack (fun elem acc -> (f elem) :: acc) list []
 
 let horner x list = 
   match list with
@@ -46,5 +51,5 @@ let main args =
   let coef = [ 0; 3; 7; -5]
   let y = horner x coef
   printf "x = %d, 0*x^3 + 3*x^2 + 7*x -5 = %d\n" x y
-
+  
   0
