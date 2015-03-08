@@ -18,10 +18,7 @@ let filterFold f list = foldBack (fun elem acc -> if (f elem) = true then elem :
 
 let mapFold f list = foldBack (fun elem acc -> (f elem) :: acc) list []
 
-let horner x list = 
-  match list with
-  | [] -> 0
-  | elem :: list -> fold (fun acc elem -> acc * x + elem ) elem list
+let horner x list = fold (fun acc elem -> acc * x + elem ) 0 list
 
 [<EntryPoint>]
 let main args =
