@@ -94,9 +94,9 @@ type ListGraph<'A when 'A : equality>(V : 'A[] , L : list<int>[]) =
 type IMarkedGraph<'A, 'B when 'A : equality> =
   interface
     inherit IGraph<'A>
-    abstract isMarked : int -> bool
-    abstract getMark  : int -> 'B
-    abstract giveMark : int -> 'B -> unit
+    abstract Mark     : int -> 'B -> unit
+    abstract GetMark  : int -> 'B
+    abstract Unmark   : int -> unit
   end
 
 type Computer = {
