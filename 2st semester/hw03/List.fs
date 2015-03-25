@@ -1,6 +1,7 @@
 ﻿type IList<'A when 'A : equality> =
   interface
-    abstract Pop     : unit -> Option<'A>
+    abstract Length     : unit -> int
+    abstract Pop        : unit -> Option<'A>
     abstract PrintList  : unit -> unit
     abstract InsertHead : 'A -> unit
     abstract InsertTail : 'A -> unit
@@ -18,15 +19,15 @@ type ATDList<'A when 'A : equality>(L : List<'A>) =
   class
     let mutable thisList = L
 
-    member this.Length() = 
-      let rec f list length =
-        match list with
-        | Void -> length
-        | Node(_, next) -> f next (length+1)
-      f thisList 0
-
     interface IList<'A> with
     
+      member this.Length() = 
+        let rec f list length =
+          match list with
+          | Void -> length
+          | Node(_, next) -> f next (length+1)
+        f thisList 0
+
       member this.Pop() =
         match thisList with
         | Void -> None
@@ -55,7 +56,7 @@ type ATDList<'A when 'A : equality>(L : List<'A>) =
         thisList <- f thisList
 
       member this.InsertAt elem index = 
-        if (index < 1) || ( index >= this.Length() ) then false 
+        if (index < 1) || ( index > (this :> IList<'A>).Length() + 1 ) then false 
           else 
             let rec f list i =
               match list with
@@ -78,7 +79,7 @@ type ATDList<'A when 'A : equality>(L : List<'A>) =
         thisList <- f thisList
 
       member this.RemoveAt index =
-        if (index < 1) || ( index >= this.Length() ) then false       
+        if (index < 1) || ( index > (this :> IList<'A>).Length() ) then false       
           else 
             let rec f list i =
               match list, i with
@@ -115,6 +116,8 @@ type ArrayList<'A when 'A : equality>(L : 'A[]) =
 
     interface IList<'A> with
 
+      member this.Length() = Array.length thisList
+
       member this.Pop() =
         match thisList with
         | [||] -> None
@@ -133,12 +136,12 @@ type ArrayList<'A when 'A : equality>(L : 'A[]) =
 
       member this.InsertAt elem index =
         let length = Array.length thisList
-        if (index < 1) || (index >= length) then false          
+        if (index < 1) || (index > length + 1) then false          
           else 
             if index = 1 then 
               (this :> IList<'A>).InsertHead elem
               true
-            elif index >= length then 
+            elif index = length + 1 then 
               (this :> IList<'A>).InsertTail elem
               true
             else
