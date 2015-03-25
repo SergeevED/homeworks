@@ -172,7 +172,7 @@ type ArrayList<'A when 'A : equality>(L : 'A[]) =
 
       member this.RemoveAt index =
         let length = Array.length thisList
-        if (index < 1) || (index >= length) then false
+        if (index < 1) || (index > length) then false
         elif index = 1 then
           (this :> IList<'A>).RemoveHead()
           true
