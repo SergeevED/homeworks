@@ -120,7 +120,7 @@ type LAN(V : Computer[] , M : bool[,]) =
         | i, _ when i >= size -> list
         | _, j when j >= size -> f (i+1) 0 list
         | i, j ->
-          if (adjMatrix.[i,j] = true) && (random.Next(100) > 100 - vertices.[j].infectedChance) 
+          if (adjMatrix.[i,j] = true) && (vertices.[i].isInfected) && (random.Next(100) > 100 - vertices.[j].infectedChance) 
             then j :: (f i (j+1) list) 
             else f i (j+1) list
       let infected = f 0 0 []
