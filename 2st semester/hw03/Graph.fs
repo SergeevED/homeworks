@@ -1,114 +1,85 @@
-﻿type IGraph<'A when 'A : equality> =
+﻿module hw
+open NUnit.Framework
+
+type IGraph<'A> = 
   interface
-    abstract Print : unit -> unit
-    abstract GetSuccessors : int -> List<'A>
-    abstract GetPredecessors : int -> List<'A>
-  end
+    abstract Size : unit -> int
+    abstract hasEdge : 'A -> 'A -> bool
+    abstract GetVertex : unit -> 'A array
+  end 
 
-type MatrixGraph<'A when 'A : equality>(V : 'A[] , M : bool[,]) =
+type MatrixGraph<'A when 'A: equality> (V : 'A array, M : bool[,]) =
   class
-    let size = V.Length
-    let vertices = V 
-    let adjMatrix = M
-    let isMarked = Array.zeroCreate<bool> size
-    do if (size <> Array2D.length1 M) || (size <> Array2D.length2 M) then failwith "Wrong argument"
-    interface IGraph<'A> with   
-      member this.Print() = 
-        Array.iter (fun x -> printf "%A " x) vertices
-        printf "\n"
-      member this.GetSuccessors index = 
-        if (index >= size || index < 0) 
-        then failwith "Wrong argument" 
-        else
-          for i = 0 to size - 1 do isMarked.[i] <- false
-          let rec f i j list =
-            isMarked.[i] <- true
-            if j >= size 
-              then list
-              else
-                match adjMatrix.[i,j] , isMarked.[j] with
-                | true , false -> vertices.[j] :: (f j 0 list) @ (f i (j+1) list)
-                | _ , _ -> f i (j+1) list
-          f index 0 []
-      member this.GetPredecessors index = 
-        if (index >= size || index < 0) 
-        then failwith "Wrong argument" 
-        else
-          for i = 0 to size - 1 do isMarked.[i] <- false
-          let rec f i j list =
-            isMarked.[i] <- true
-            if j >= size 
-              then list
-              else
-                match adjMatrix.[j,i] , isMarked.[j] with
-                | true , false -> vertices.[j] :: (f j 0 list) @ (f i (j+1) list)
-                | _ , _ -> f i (j+1) list
-          f index 0 []
-  end
-
-type ListGraph<'A when 'A : equality>(V : 'A[] , L : list<int>[]) =
-  class
-    let size = V.Length
-    let vertices = V 
-    let adjList = L
-    let isMarked = Array.zeroCreate<bool> size
-    do if (size <> Array.length L) then failwith "Wrong argument"
-    do for list in L do for x in list do if (x < 0) || (x > size) then failwith "Wrong argument"
+    let vertices = V
+    let matrix = M
     interface IGraph<'A> with
-      member this.Print() = 
-        Array.iter (fun x -> printf "%A " x) vertices
-        printf "\n"
-      member this.GetSuccessors index = 
-        if (index >= size || index < 0) 
-        then failwith "Wrong argument" 
-        else
-          for i = 0 to size - 1 do isMarked.[i] <- false
-          let rec f list  =
-            match list with
-            | [] -> []
-            | a :: list when isMarked.[a] -> f list
-            | a :: list ->
-              isMarked.[a] <- true
-              vertices.[a] :: (f adjList.[a]) @ (f list)
-          isMarked.[index] <- true
-          f adjList.[index]
-      member this.GetPredecessors index = 
-        if (index >= size || index < 0) 
-          then failwith "Wrong argument" 
-          else
-            for i = 0 to size - 1 do isMarked.[i] <- false
-            let rec f i j list =
-              if i >= size 
-                then []
-                else 
-                  match List.tryFind ((=)j) adjList.[i] with
-                  | Some _ when isMarked.[i] -> f (i+1) j list 
-                  | Some _  -> 
-                    isMarked.[i] <- true 
-                    vertices.[i] :: (f 0 i []) @ (f (i+1) j list) 
-                  | None -> f (i+1) j list
-            isMarked.[index] <- true  
-            f 0 index []
+      member this.GetVertex() = vertices
+      member this.Size() = vertices.Length
+      member this.hasEdge node1 node2 =
+        let i = Array.findIndex (fun x -> x = node1) vertices
+        let j = Array.findIndex (fun x -> x = node2) vertices
+        matrix.[i,j]
   end
 
-type IMarkedGraph<'A, 'B when 'A : equality> =
-  interface
-    inherit IGraph<'A>
-    abstract Mark     : int -> 'B -> unit
-    abstract GetMark  : int -> 'B
-    abstract Unmark   : int -> unit
+type ListGraph<'A when 'A: equality> (V : 'A array, L : ('A list) array) =
+  class
+    let vertices = V
+    let list = L
+    interface IGraph<'A> with
+      member this.GetVertex() = vertices
+      member this.Size() = vertices.Length
+      member this.hasEdge vertex1 vertex2 =
+        let index = Array.findIndex (fun x -> x = vertex1) vertices
+        List.exists (fun x -> x = vertex2) list.[index]
   end
+
+
+let GetSuccessors (graph : IGraph<'A>) vertex =
+  match Array.tryFindIndex (fun x -> x = vertex) (graph.GetVertex()) with
+  | None -> []
+  | _ ->
+    let visited = [|for i in 0 .. graph.Size() - 1 -> false|]
+    let rec f (graph : IGraph<'A>) (visited : bool array) vertex =
+      let mutable result = []
+      let index = Array.findIndex (fun x -> x = vertex) (graph.GetVertex())
+      visited.[index] <- true 
+      for i in 0 .. graph.Size() - 1 do
+        if not visited.[i] && (graph.hasEdge vertex (graph.GetVertex().[i]))
+          then
+            visited.[i] <- true
+            result <- List.append result [graph.GetVertex().[i];]
+            result <- List.append result (f graph visited (graph.GetVertex().[i]))        
+      result
+    f graph visited vertex
+
+
+let GetPredecessors (graph : IGraph<'A>) vertex =
+  match Array.tryFindIndex (fun x -> x = vertex) (graph.GetVertex()) with
+  | None -> []
+  | _ ->
+    let visited = [|for i in 0 .. graph.Size() - 1 -> false|]
+    let rec f (graph : IGraph<'A>) (visited : bool array) vertex =
+      let mutable result = []
+      let index = Array.findIndex (fun x -> x = vertex) (graph.GetVertex())
+      visited.[index] <- true 
+      for i in 0 .. graph.Size() - 1 do
+        if not visited.[i] && (graph.hasEdge (graph.GetVertex().[i]) vertex)
+          then
+            visited.[i] <- true
+            result <- List.append result [graph.GetVertex().[i];]
+            result <- List.append result (f graph visited (graph.GetVertex().[i]))        
+      result
+    f graph visited vertex
 
 type Computer = {
   number : int; 
   os : string;
   infectedChance : int;
   mutable isInfected : bool;
-  }
+}
 
 type LAN(V : Computer[] , M : bool[,]) =
   class
-    inherit MatrixGraph<Computer>(V , M)
     let size = V.Length
     let vertices = V 
     let adjMatrix = M
@@ -120,7 +91,8 @@ type LAN(V : Computer[] , M : bool[,]) =
         | i, _ when i >= size -> list
         | _, j when j >= size -> f (i+1) 0 list
         | i, j ->
-          if (adjMatrix.[i,j] = true) && (vertices.[i].isInfected) && (random.Next(100) > 100 - vertices.[j].infectedChance) 
+          if (adjMatrix.[i,j] = true) && (vertices.[i].isInfected) && 
+          (this.GetRandom() > 100 - vertices.[j].infectedChance) 
             then j :: (f i (j+1) list) 
             else f i (j+1) list
       let infected = f 0 0 []
@@ -129,51 +101,288 @@ type LAN(V : Computer[] , M : bool[,]) =
       for i = 0 to size - 1 do 
         printf "Computer %d : " vertices.[i].number
         if vertices.[i].isInfected then printf "infected\n" else printf "not infected\n" 
+    member this.GetInfected() =
+       Array.filter (fun x -> x.isInfected) vertices
+    abstract GetRandom: unit -> int
+    default this.GetRandom() =
+      let random = System.Random() 
+      random.Next(100)
     end
 
-[<EntryPoint>]
-let main args =
-  printf "Graph: 0 -> 1 -> 2 ; 1 -> 3 -> 2 ; 3 -> 4 (That`s single graph)\n"
+
+[<Test>]
+let MGraphGetSuccessorsNonExistentVertex() = 
+  let vertices = [| 0; 1; 2; 3; 4|]
+  let adjMatrix = Array2D.create 5 5 true
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([], GetSuccessors mGraph 5)
+
+[<Test>]
+let MGraphGetSuccessorsEmptyGraph() = 
+  let vertices = [||]
+  let adjMatrix = Array2D.create 0 0 true
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([], GetSuccessors mGraph 0)
+
+[<Test>]
+let MGraphGetSuccessorsVertexWithNoSuccessors() = 
+  let vertices = [| 0; 1; 2; 3; 4|]
+  let adjMatrix = Array2D.zeroCreate<bool> 5 5
+  adjMatrix.[1,2] <- true; adjMatrix.[2,3] <- true; adjMatrix.[3,1] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([], GetSuccessors mGraph 0)
+
+[<Test>]
+let MGraphGetSuccessorsAllVerticesAreConnectedCyclically() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjMatrix = Array2D.zeroCreate<bool> 10 10
+  adjMatrix.[0,1] <- true; adjMatrix.[1,2] <- true; adjMatrix.[2,3] <- true;
+  adjMatrix.[3,4] <- true; adjMatrix.[4,5] <- true; adjMatrix.[5,6] <- true;
+  adjMatrix.[6,7] <- true; adjMatrix.[7,8] <- true; adjMatrix.[8,9] <- true;
+  adjMatrix.[9,0] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetSuccessors mGraph 0))
+
+[<Test>]
+let MGraphGetSuccessorsAllVerticesAreConnectedToEachOther() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjMatrix = Array2D.create 10 10 true
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetSuccessors mGraph 0))
+
+[<Test>]
+let MGraphGetSuccessorsComplicatedGraph01() = 
   let vertices = [| 0 ; 1 ; 2 ; 3 ; 4 |]
   let adjMatrix = Array2D.zeroCreate<bool> 5 5
-  adjMatrix.[0,1] <- true; adjMatrix.[1,2] <- true; adjMatrix.[1,3] <- true; adjMatrix.[3,2] <- true; adjMatrix.[3,4] <- true;
+  adjMatrix.[0,1] <- true; adjMatrix.[1,2] <- true; adjMatrix.[1,3] <- true;
+  adjMatrix.[3,2] <- true; adjMatrix.[3,4] <- true;
   let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
-  printf "Graph with adjacency matrix : "
-  mGraph.Print()
-  printf "%A\n" adjMatrix
-  printf "Successors of '1' : "
-  printf "%A\n" (mGraph.GetSuccessors 1)
-  printf "Predecessors of '4' : "
-  printf "%A\n" (mGraph.GetPredecessors 4)
+  Assert.AreEqual([2; 3; 4], List.sort (GetSuccessors mGraph 1))
 
-  let adjLists = [| [1] ; [2;3] ; [] ; [2;4] ; [] |]
+[<Test>]
+let MGraphGetSuccessorsComplicatedGraph02() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjMatrix = Array2D.zeroCreate<bool> 10 10
+  adjMatrix.[9,2] <- true; adjMatrix.[1,2] <- true; adjMatrix.[2,3] <- true;
+  adjMatrix.[3,5] <- true; adjMatrix.[3,8] <- true; adjMatrix.[5,6] <- true;
+  adjMatrix.[5,7] <- true; adjMatrix.[7,2] <- true; 
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([3; 5; 6; 7; 8], List.sort (GetSuccessors mGraph 2))
+
+[<Test>]
+let MGraphGetSuccessorsComplicatedGraph03() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15|]
+  let adjMatrix = Array2D.zeroCreate<bool> 16 16
+  adjMatrix.[9,1] <- true; adjMatrix.[9,2] <- true; adjMatrix.[9,3] <- true;
+  adjMatrix.[9,4] <- true; adjMatrix.[9,5] <- true; adjMatrix.[1,0] <- true;
+  adjMatrix.[2,0] <- true; adjMatrix.[3,0] <- true; adjMatrix.[4,0] <- true;
+  adjMatrix.[5,0] <- true; adjMatrix.[10,9] <- true; adjMatrix.[10,6] <- true;
+  adjMatrix.[6,7] <- true; adjMatrix.[6,8] <- true; adjMatrix.[6,9] <- true;
+  adjMatrix.[9,6] <- true; adjMatrix.[6,11] <- true; adjMatrix.[6,12] <- true;
+  adjMatrix.[6,13] <- true; adjMatrix.[7,9] <- true; adjMatrix.[8,9] <- true;
+  adjMatrix.[14,10] <- true; adjMatrix.[15,14] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 11; 12; 13], List.sort (GetSuccessors mGraph 10))
+
+
+[<Test>]
+let MGraphGetPredecessorsNonExistentVertex() = 
+  let vertices = [| 0; 1; 2; 3; 4|]
+  let adjMatrix = Array2D.create 5 5 true
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([], GetPredecessors mGraph 5)
+
+[<Test>]
+let MGraphGetPredecessorsEmptyGraph() = 
+  let vertices = [||]
+  let adjMatrix = Array2D.create 0 0 true
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([], GetPredecessors mGraph 0)
+
+[<Test>]
+let MGraphGetPredecessorsVertexWithNoPredecessors() = 
+  let vertices = [| 0; 1; 2; 3; 4|]
+  let adjMatrix = Array2D.zeroCreate<bool> 5 5
+  adjMatrix.[1,2] <- true; adjMatrix.[2,3] <- true; adjMatrix.[3,1] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([], GetPredecessors mGraph 0)
+
+[<Test>]
+let MGraphGetPredecessorsAllVerticesAreConnectedCyclically() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjMatrix = Array2D.zeroCreate<bool> 10 10
+  adjMatrix.[0,1] <- true; adjMatrix.[1,2] <- true; adjMatrix.[2,3] <- true;
+  adjMatrix.[3,4] <- true; adjMatrix.[4,5] <- true; adjMatrix.[5,6] <- true;
+  adjMatrix.[6,7] <- true; adjMatrix.[7,8] <- true; adjMatrix.[8,9] <- true;
+  adjMatrix.[9,0] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetPredecessors mGraph 0))
+
+[<Test>]
+let MGraphGetPredecessorsAllVerticesAreConnectedToEachOther() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjMatrix = Array2D.create 10 10 true
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetPredecessors mGraph 0))
+
+[<Test>]
+let MGraphGetPredecessorsComplicatedGraph01() = 
+  let vertices = [| 0 ; 1 ; 2 ; 3 ; 4 |]
+  let adjMatrix = Array2D.zeroCreate<bool> 5 5
+  adjMatrix.[0,1] <- true; adjMatrix.[1,2] <- true; adjMatrix.[1,3] <- true;
+  adjMatrix.[3,2] <- true; adjMatrix.[3,4] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([0; 1; 3], List.sort (GetPredecessors mGraph 2))
+
+[<Test>]
+let MGraphGetPredecessorsComplicatedGraph02() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjMatrix = Array2D.zeroCreate<bool> 10 10
+  adjMatrix.[9,2] <- true; adjMatrix.[1,2] <- true; adjMatrix.[2,3] <- true;
+  adjMatrix.[3,5] <- true; adjMatrix.[3,8] <- true; adjMatrix.[5,6] <- true;
+  adjMatrix.[5,7] <- true; adjMatrix.[7,2] <- true; 
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 7; 9], List.sort (GetPredecessors mGraph 5))
+
+[<Test>]
+let MGraphGetPredecessorsComplicatedGraph03() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15|]
+  let adjMatrix = Array2D.zeroCreate<bool> 16 16
+  adjMatrix.[0,5] <- true; adjMatrix.[1,5] <- true; adjMatrix.[2,5] <- true;
+  adjMatrix.[3,5] <- true; adjMatrix.[4,5] <- true; adjMatrix.[6,7] <- true;
+  adjMatrix.[7,5] <- true; adjMatrix.[8,6] <- true; adjMatrix.[9,6] <- true;
+  adjMatrix.[10,6] <- true; adjMatrix.[5,11] <- true; adjMatrix.[1,12] <- true;
+  adjMatrix.[12,13] <- true; adjMatrix.[5,14] <- true; adjMatrix.[5,15] <- true;
+  let mGraph = (new MatrixGraph<int>(vertices, adjMatrix)) :> IGraph<int>
+  Assert.AreEqual([0; 1; 2; 3; 4; 6; 7; 8; 9; 10], List.sort (GetPredecessors mGraph 5))
+
+
+[<Test>]
+let LGraphGetSuccessorsNonExistentVertex() = 
+  let vertices = [| 0; 1; 2; 3; 4|]
+  let adjLists = [| [1]; [2]; [3]; [4]; [0] |]
   let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
-  printf "Graph with adjacency lists : "
-  lGraph.Print()
-  printf "%A\n" adjLists
-  printf "Successors of '1' : "
-  printf "%A\n" (lGraph.GetSuccessors 1)
-  printf "Predecessors of '4' : "
-  printf "%A\n" (lGraph.GetPredecessors 4)
+  Assert.AreEqual([], GetSuccessors lGraph 5)
 
-  printf "\n"
-  printf "LAN\n"
-  let lan = [|
-               { number = 1; os = "Windows 98"; infectedChance = 25; isInfected = false} 
-               { number = 2; os = "Linux";      infectedChance = 20; isInfected = false} 
-               { number = 3; os = "FreeBSD";    infectedChance = 15; isInfected = false} 
-               { number = 4; os = "Windows 95"; infectedChance = 30; isInfected = true} 
-               { number = 5; os = "MenuetOS";   infectedChance = 10;  isInfected = false} 
-            |]
-  let m3 = Array2D.zeroCreate<bool> 5 5
-  m3.[0,1] <- true; m3.[0,3] <- true; m3.[1,0] <- true; m3.[1,4] <- true; m3.[4,1] <- true;
-  m3.[4,3] <- true; m3.[3,0] <- true; m3.[3,4] <- true; m3.[3,2] <- true; m3.[2,3] <- true;
-  printf "LAN: 3 <-> 4 <-> 1 <-> 2 <-> 5 <-> 4\n"
-  let J = new LAN(lan, m3)
-  Array.iter (fun x -> printf "%A\n" x) lan 
-  for i = 1 to 5 do 
-    printf "Check %d\n" i 
-    J.Show()
-    J.TryInfect()
-    
+[<Test>]
+let LGraphGetSuccessorsEmptyGraph() = 
+  let vertices = [||]
+  let adjLists = [||]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([], GetSuccessors lGraph 0)
+
+[<Test>]
+let LGraphGetSuccessorsVertexWithNoSuccessors() = 
+  let vertices = [|0; 1; 2; 3; 4|]
+  let adjLists = [|[]; [2]; [3]; [4]; [1]|]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([], GetSuccessors lGraph 0)
+
+[<Test>]
+let LGraphGetSuccessorsAllVerticesAreConnectedCyclically() = 
+  let vertices = [|0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjLists = [|[1]; [2]; [3]; [4]; [5]; [6]; [7]; [8]; [9]; [0]|]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetSuccessors lGraph 0))
+
+[<Test>]
+let LGraphGetSuccessorsAllVerticesAreConnectedToEachOther() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjLists = [| 
+     [1;2;3;4;5;6;7;8;9]; [0;2;3;4;5;6;7;8;9]; [0;1;3;4;5;6;7;8;9]; [0;1;2;4;5;6;7;8;9];
+     [0;1;2;3;5;6;7;8;9]; [0;1;2;3;4;6;7;8;9]; [0;1;2;3;4;5;7;8;9]; [0;1;2;3;4;5;6;8;9];
+     [0;1;2;3;4;5;6;7;9]; [0;1;2;3;4;5;6;7;8] |]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetSuccessors lGraph 0))
+
+[<Test>]
+let LGraphGetSuccessorsComplicatedGraph01() = 
+  let vertices = [| 0 ; 1 ; 2 ; 3 ; 4 |]
+  let adjLists = [| [1]; [2;3]; []; [2;4]; [] |]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([2; 3; 4], List.sort (GetSuccessors lGraph 1))
+
+[<Test>]
+let LGraphGetSuccessorsComplicatedGraph02() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjLists = [| []; [2]; [3]; [5;8]; []; [6;7]; []; [2]; []; [2] |]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([3; 5; 6; 7; 8], List.sort (GetSuccessors lGraph 2))
+
+[<Test>]
+let LGraphGetSuccessorsComplicatedGraph03() = 
+  let vertices = [|0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15|]
+  let adjLists = [| 
+     []; [0]; [0]; [0]; [0]; [0]; [7;8;9;11;12;13]; []; []; [1;2;3;4;5;6]; [6;9]; [];
+     []; []; [10]; [14]|]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 11; 12; 13], List.sort (GetSuccessors lGraph 10))
+
+
+[<Test>]
+let LGraphPredecessorsNonExistentVertex() = 
+ let vertices = [| 0; 1; 2; 3; 4|]
+ let adjLists = [| [1]; [2]; [3]; [4]; [0] |]
+ let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+ Assert.AreEqual([], GetPredecessors lGraph 5)
+
+[<Test>]
+let LGraphPredecessorsEmptyGraph() = 
+  let vertices = [||]
+  let adjLists = [||]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([], GetPredecessors lGraph 0)
+
+[<Test>]
+let LGraphGetPredecessorsVertexWithNoPredecessors() = 
+  let vertices = [|0; 1; 2; 3; 4|]
+  let adjLists = [|[]; [2]; [3]; [4]; [1]|]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([], GetPredecessors lGraph 0)
+
+[<Test>]
+let LGraphGetPredecessorsAllVerticesAreConnectedCyclically() = 
+  let vertices = [|0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjLists = [|[1]; [2]; [3]; [4]; [5]; [6]; [7]; [8]; [9]; [0]|]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetPredecessors lGraph 0))
+
+[<Test>]
+let LGraphGetPredecessorsAllVerticesAreConnectedToEachOther() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjLists = [| 
+     [1;2;3;4;5;6;7;8;9]; [0;2;3;4;5;6;7;8;9]; [0;1;3;4;5;6;7;8;9]; [0;1;2;4;5;6;7;8;9];
+     [0;1;2;3;5;6;7;8;9]; [0;1;2;3;4;6;7;8;9]; [0;1;2;3;4;5;7;8;9]; [0;1;2;3;4;5;6;8;9];
+     [0;1;2;3;4;5;6;7;9]; [0;1;2;3;4;5;6;7;8] |]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 4; 5; 6; 7; 8; 9], List.sort (GetPredecessors lGraph 0))
+
+[<Test>]
+let LGraphGetPredecessorsComplicatedGraph01() = 
+  let vertices = [| 0 ; 1 ; 2 ; 3 ; 4 |]
+  let adjLists = [| [1]; [2;3]; []; [2;4]; [] |]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([0; 1; 3], List.sort (GetPredecessors lGraph 2))
+
+[<Test>]
+let LGraphGetPredecessorsComplicatedGraph02() = 
+  let vertices = [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9|]
+  let adjLists = [| []; [2]; [3]; [5;8]; []; [6;7]; []; [2]; []; [2] |]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([1; 2; 3; 7; 9], List.sort (GetPredecessors lGraph 5))
+
+[<Test>]
+let LGraphGetPredecessorsComplicatedGraph03() = 
+  let vertices = [|0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15|]
+  let adjLists = [| 
+     [5]; [5;12]; [5]; [5]; [5]; [11;14;15]; [7]; [5]; [6]; [6]; [6]; [];
+     [13]; []; []; []|]
+  let lGraph = (new ListGraph<int>(vertices, adjLists)) :> IGraph<int>
+  Assert.AreEqual([0; 1; 2; 3; 4; 6; 7; 8; 9; 10], List.sort (GetPredecessors lGraph 5))
+
+
+
+[<EntryPoint>]
+let main argv =
+
   0
