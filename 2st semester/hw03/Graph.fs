@@ -15,9 +15,9 @@ type MatrixGraph<'A when 'A: equality> (V : 'A array, M : bool[,]) =
     interface IGraph<'A> with
       member this.GetVertex() = vertices
       member this.Size() = vertices.Length
-      member this.hasEdge node1 node2 =
-        let i = Array.findIndex (fun x -> x = node1) vertices
-        let j = Array.findIndex (fun x -> x = node2) vertices
+      member this.hasEdge vertex1 vertex2 =
+        let i = Array.findIndex (fun x -> x = vertex1) vertices
+        let j = Array.findIndex (fun x -> x = vertex2) vertices
         matrix.[i,j]
   end
 
