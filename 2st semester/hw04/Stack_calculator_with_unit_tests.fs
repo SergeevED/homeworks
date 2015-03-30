@@ -12,12 +12,9 @@ type Stack<'A>(V : list<'A>) =
       else Some (List.head list)
     member this.Push x = list <- x :: list
     member this.Pop() =
-      if this.Size() = 0 
-      then None
-      else
-        let head = this.Top()
-        list <- List.tail list
-        head
+      let head = Option.get ( this.Top() )
+      list <- List.tail list
+      head
   end
 
 
@@ -49,8 +46,8 @@ let isOperator c =
 let isNumber (c : string) =
   match ( String.length c ) with
   | 0 -> false
-  | 1 -> if (System.Char.IsDigit (c.Chars(0))) then true else false
-  | x -> if (System.Char.IsDigit (c.Chars(1))) then true else false 
+  | 1 -> System.Char.IsDigit (c.Chars(0))
+  | x -> System.Char.IsDigit (c.Chars(1))
 
 let rec scanToken (stack : Stack<char>) =
   match stack.Top() with
@@ -65,31 +62,31 @@ let rec scanToken (stack : Stack<char>) =
         | (Some strNumber, true) -> (Some("-" + strNumber), true)
         | _ -> failwith "ScanToken() wrong output"
       else
-        (Some (System.Char.ToString (Option.get (temp ))), true)  
+        (Some (System.Char.ToString temp), true)  
     | ' ' -> 
-      ignore( stack.Pop() )
+      ignore(stack.Pop() )
       scanToken stack
     | x when (System.Char.IsDigit x) ->
       let rec scanNumber strNumber =
         match stack.Top() with
         | None -> strNumber
         | x when (System.Char.IsDigit (Option.get x)) ->
-          let temp = System.Char.ToString (Option.get ( stack.Pop() ))
+          let temp = System.Char.ToString (stack.Pop() )
           strNumber + (scanNumber temp)
         | _ -> strNumber
-      let x = Option.get ( stack.Pop() )
+      let x = stack.Pop() 
       (Some (scanNumber (System.Char.ToString x)), true)
     | x when (System.Char.IsLetter x) ->
       let rec scanLetter strNumber =
         match stack.Top() with
         | None -> strNumber
         | x when (System.Char.IsLetter (Option.get x)) ->
-          let temp = System.Char.ToString (Option.get ( stack.Pop() ))
+          let temp = System.Char.ToString (stack.Pop() )
           strNumber + (scanLetter temp)
         | _ -> strNumber
-      let x = Option.get ( stack.Pop() )
+      let x = stack.Pop() 
       (Some (scanLetter (System.Char.ToString x)), true)
-    | x when (x = '(' || x = ')') -> (Some (System.Char.ToString (Option.get ( stack.Pop() ))) , true)
+    | x when (x = '(' || x = ')') -> (Some (System.Char.ToString (stack.Pop() )) , true)
     | _ -> (None, false) 
     
 let calculate (stack : Stack<string>) =
@@ -98,32 +95,32 @@ let calculate (stack : Stack<string>) =
   while (stack.Size() > 0) && (isCorrect) do
     let token = stack.Pop()
     match token with
-    | Some(value) when (isNumber (value)) -> result.Push (int32 (value))
-    | Some(operator) when (isOperator (operator.Chars(0)) ) && ((String.length operator = 1)) ->
+    | value when (isNumber (value)) -> result.Push (int32 (value))
+    | operator when (isOperator (operator.Chars(0)) ) && ((String.length operator = 1)) ->
       if result.Size() < 2 
         then isCorrect <- false
         else
           let operand2 = result.Pop()
           let operand1 = result.Pop()
           match operator with
-          | "+" -> result.Push ((int32(Option.get(operand1))) + (int32(Option.get(operand2)))) 
-          | "-" -> result.Push ((int32(Option.get(operand1))) - (int32(Option.get(operand2))))
-          | "*" -> result.Push ((int32(Option.get(operand1))) * (int32(Option.get(operand2))))
+          | "+" -> result.Push (int32(operand1) + int32(operand2)) 
+          | "-" -> result.Push (int32(operand1) - int32(operand2)) 
+          | "*" -> result.Push (int32(operand1) * int32(operand2)) 
           | "%" -> 
-            if (operand2 = Some 0)
+            if (operand2 = 0)
               then isCorrect <- false
-              else result.Push ((int32(Option.get(operand1))) % (int32(Option.get(operand2))))
+              else result.Push (int32(operand1) % int32(operand2)) 
           | "/" ->
-            if (operand2 = Some 0)
+            if (operand2 = 0)
               then isCorrect <- false
-              else result.Push ((int32(Option.get(operand1))) / (int32(Option.get(operand2))))
+              else result.Push (int32(operand1) / int32(operand2)) 
           | "^" ->
             match operand1, operand2 with
-            | _ , Some x when x < 0 -> isCorrect <- false
-            | Some 0 , Some 0 -> isCorrect <- false
-            | Some val1 , Some val2 when val1 = 0 -> result.Push 0
-            | Some x , Some 0 -> result.Push 1
-            | Some val1 , Some val2 -> result.Push (pown val1 val2)
+            | _ , x when x < 0 -> isCorrect <- false
+            | 0 , 0 -> isCorrect <- false
+            | val1 , val2 when val1 = 0 -> result.Push 0
+            | x , 0 -> result.Push 1
+            | val1 , val2 -> result.Push (pown val1 val2)
             | _ , _ -> isCorrect <- false
           | _ -> isCorrect <- false
     | _ -> isCorrect <- false      
@@ -132,12 +129,16 @@ let calculate (stack : Stack<string>) =
     else 
       if not (stack.Size() = 0) 
       then None
-      else ( result.Pop() )
+      else  Some(result.Pop() )
+
+let  firstOperatorAfterSecond op1 op2 =
+  (isLeftAssoc op1) && (precedence op1 <= precedence op2)
+  || not (isLeftAssoc op1) && (precedence op1 < precedence op2)
 
 type Program = Continue | EndCorrect | EndIncorrect 
 
 let stackCalc (str : string) variableList = 
-  let list = Array.toList ( str.ToCharArray() )
+  let list = Array.toList (str.ToCharArray() )
   let mutable program = Continue
   let mutable operatorWasScanned = true          
   let outputStack = Stack<string>([])
@@ -166,10 +167,9 @@ let stackCalc (str : string) variableList =
         then program <- EndIncorrect
         else
           operatorWasScanned <- true
-          while (not (tempStack.Size() = 0)) &&
-          (isLeftAssoc (x.Chars(0)) && (precedence (x.Chars(0)) <= precedence (Option.get (tempStack.Top() )))
-          || not (isLeftAssoc (x.Chars(0) )) && (precedence (x.Chars(0)) < precedence (Option.get (tempStack.Top() )))) do
-            outputStack.Push (string (Option.get (tempStack.Pop() )))
+          while (tempStack.Size() <> 0) 
+          && (firstOperatorAfterSecond (x.Chars(0) ) (Option.get (tempStack.Top() ))) do
+            outputStack.Push (string (tempStack.Pop() ))
           tempStack.Push (x.Chars(0))
     | (Some x, true) when x.Chars(0) = '(' -> 
       if not operatorWasScanned
@@ -179,8 +179,8 @@ let stackCalc (str : string) variableList =
       if operatorWasScanned
         then program <- EndIncorrect
         else
-          while (not (tempStack.Size() = 0)) && (not (tempStack.Top() = Some '('))  do
-            outputStack.Push (string (Option.get (tempStack.Pop() )))
+          while (tempStack.Size() <> 0) && (tempStack.Top() <> Some '(')  do
+            outputStack.Push (string (tempStack.Pop() ))
           if tempStack.Size() = 0 
             then program <- EndIncorrect
             else ignore (tempStack.Pop() )
@@ -189,102 +189,79 @@ let stackCalc (str : string) variableList =
   match program with
   | EndIncorrect -> None
   | _ ->
-    while not (tempStack.Size() = 0) do 
-      outputStack.Push (string (Option.get (tempStack.Pop() )))
+    while (tempStack.Size() <> 0) do 
+      outputStack.Push (string (tempStack.Pop() ))
     outputStack.Reverse() 
     calculate outputStack
 
 
-[<Test>]
-let DivisionByZero() =
-  let str1 = "1/0"
-  let str2 = "1%0"
-  let values = [("x",0)]
-  Assert.AreEqual(None, stackCalc str1 [])
-  Assert.AreEqual(None, stackCalc str2 [])
-  Assert.AreEqual(None, stackCalc str1 values)
+[<TestFixture>]
+type TestStackCalculator () =
 
-[<Test>]
-let IncorrectPow() =
-  let str1 = "0^0"
-  let str2 = "1^(-1)"
-  let str3 = "1+2^"
-  let str4 = "2^x"
-  let values = [("x",-1)]
-  Assert.AreEqual(None, stackCalc str1 [])
-  Assert.AreEqual(None, stackCalc str2 [])
-  Assert.AreEqual(None, stackCalc str3 [])
-  Assert.AreEqual(None, stackCalc str4 values)
+  let values1 = [("x",0)]
+  let values2 = [("x",-1)]
+  let values3 = [("x",12345)]
 
-[<Test>]
-let IncorrectOrder() =
-  let str1 = "1-"
-  let str2 = "*1-3"
-  let str3 = "5*/3"
-  let str4 = "1 2 + 3"
-  let str5 = "1+(1-3)"
-  let str6 = "1-2+3x%5"
-  let values = [("x",-1)]
-  Assert.AreEqual(None, stackCalc str1 [])
-  Assert.AreEqual(None, stackCalc str2 [])
-  Assert.AreEqual(None, stackCalc str3 [])
-  Assert.AreEqual(None, stackCalc str4 [])
-  Assert.AreEqual(None, stackCalc str5 [])
-  Assert.AreEqual(None, stackCalc str6 values)
+  [<TestCase("1/0")>]
+  [<TestCase("1%0")>]
+  [<TestCase("1/x")>]
+  member this.DivisionByZero str =
+    Assert.AreEqual(None, stackCalc str values1)
 
-[<Test>]
-let IncorrectSymbols() =
-  let str1 = "123*2$"
-  let str2 = "12+!2"
-  Assert.AreEqual(None, stackCalc str1 [])
-  Assert.AreEqual(None, stackCalc str2 [])
 
-[<Test>]
-let TestBracketsIncorrect() =
-  let str1 = "1*(2-)*2"
-  let str2 = "1*(2-3)2+1"
-  let str3 = "1*(2-3)x+1"
-  let str4 = "1+2*(1"
-  let str5 = "1*2+3)*2"
-  let values = [("x",-1)]
-  Assert.AreEqual(None, stackCalc str1 [])
-  Assert.AreEqual(None, stackCalc str2 [])
-  Assert.AreEqual(None, stackCalc str3 values)
-  Assert.AreEqual(None, stackCalc str4 [])
-  Assert.AreEqual(None, stackCalc str5 [])
+  [<TestCase("0^0")>]
+  [<TestCase("1^(-1)")>]
+  [<TestCase("1+2^")>]
+  [<TestCase("2^x")>]
+  member this.IncorrectPow str =
+    Assert.AreEqual(None, stackCalc str values2)
 
-[<Test>]
-let TestValues() =
-  let str1 = "a+b-c*d/e%f"
-  let values1 = [("a",10);("b",8);("c",9);("d",10);("e",2);("f",4)]
-  let str2 = "aaaaaaaaaaaaaaa * bbbbbbbbbbbbbbb"
-  let values2 = [("aaaaaaaaaaaaaaa",10);("bbbbbbbbbbbbbbb",8)]
-  Assert.AreEqual(Some 17, stackCalc str1 values1)
-  Assert.AreEqual(Some 80, stackCalc str2 values2)
 
-[<Test>]
-let TestUnaryMinus() =
-  let str1 = "(-5)+(-6)*((-2)*3)"
-  Assert.AreEqual(Some 31, stackCalc str1 [])
+  [<TestCase("1-")>]
+  [<TestCase("*1-3")>]
+  [<TestCase("5*/3")>]
+  [<TestCase("1 2 + 3")>]
+  [<TestCase("1+(1-3)")>]
+  [<TestCase("1-2+3x%5")>]
+  member this.IncorrectOrder str =
+    Assert.AreEqual(None, stackCalc str values2)  
 
-[<Test>]
-let Test01() =
-  let str1 = "100 + 200 - 400 * 30 / 50 % 39"
-  Assert.AreEqual(Some 294, stackCalc str1 [])
 
-[<Test>]
-let Test02() =
-  let str1 = "(1234567 *123 - 98765432+1)/12345+555555"
-  let values1 = [("x",12345)]
-  Assert.AreEqual(Some 559855, stackCalc str1 values1)
+  [<TestCase("123*2$")>]
+  [<TestCase("*12+!2")>]
+  member this.IncorrectSymbols str =
+    Assert.AreEqual(None, stackCalc str [])
 
-[<Test>]
-let Test03() =
-  let str1 = "1+2*4^3^2"
-  Assert.AreEqual(Some 524289, stackCalc str1 [])
+
+  [<TestCase("1*(2-)*2")>]
+  [<TestCase("1*(2-3)2+1")>]
+  [<TestCase("1*(2-3)x+1")>]
+  [<TestCase("1+2*(1")>]
+  [<TestCase("1*2+3)*2")>]
+  member this.TestBracketsIncorrect str =
+    Assert.AreEqual(None, stackCalc str values2)
+
+
+  [<Test>]
+  member this.TestValues() =
+    let str = "a+b-c*d/e%f"
+    let values = [("a",10);("b",8);("c",9);("d",10);("e",2);("f",4)]
+    Assert.AreEqual(Some 17, stackCalc str values)
+
+
+  [<Test>]
+  member this.TestUnaryMinus() =
+    let str = "(-5)+(-6)*((-2)*3)"
+    Assert.AreEqual(Some 31, stackCalc str [])
+
+
+  [<TestCase("100 + 200 - 400 * 30 / 50 % 39", Result = 294)>]
+  [<TestCase("(1234567 *123 - 98765432+1)/12345+555555", Result = 559855)>]
+  [<TestCase("1+2*4^3^2", Result = 524289)>]
+  member this.TestExpression str =
+    Option.get (stackCalc str values3)
 
 
 [<EntryPoint>]
 let main args =  
   0
-  
