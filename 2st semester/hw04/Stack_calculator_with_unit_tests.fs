@@ -8,8 +8,8 @@ type Stack<'A>(V : list<'A>) =
     member this.Reverse() = list <- (List.rev list)
     member this.Top() = 
       if this.Size() = 0 
-      then None
-      else Some (List.head list)
+        then None
+        else Some (List.head list)
     member this.Push x = list <- x :: list
     member this.Pop() =
       let head = Option.get ( this.Top() )
@@ -57,12 +57,12 @@ let rec scanToken (stack : Stack<char>) =
     | x when (isOperator x) -> 
       let temp = stack.Pop()
       if (x = '-') && (not (stack.Size() = 0)) && (System.Char.IsDigit (Option.get (stack.Top() )))
-      then
-        match (scanToken stack) with 
-        | (Some strNumber, true) -> (Some("-" + strNumber), true)
-        | _ -> failwith "ScanToken() wrong output"
-      else
-        (Some (System.Char.ToString temp), true)  
+        then
+          match (scanToken stack) with 
+          | (Some strNumber, true) -> (Some("-" + strNumber), true)
+          | _ -> failwith "ScanToken() wrong output"
+        else
+          (Some (System.Char.ToString temp), true)  
     | ' ' -> 
       ignore(stack.Pop() )
       scanToken stack
@@ -90,46 +90,50 @@ let rec scanToken (stack : Stack<char>) =
     | _ -> (None, false) 
     
 let calculate (stack : Stack<string>) =
-  let result = Stack<int>([])
-  let mutable isCorrect = true
-  while (stack.Size() > 0) && (isCorrect) do
-    let token = stack.Pop()
-    match token with
-    | value when (isNumber (value)) -> result.Push (int32 (value))
-    | operator when (isOperator (operator.Chars(0)) ) && ((String.length operator = 1)) ->
-      if result.Size() < 2 
-        then isCorrect <- false
-        else
-          let operand2 = result.Pop()
-          let operand1 = result.Pop()
-          match operator with
-          | "+" -> result.Push (int32(operand1) + int32(operand2)) 
-          | "-" -> result.Push (int32(operand1) - int32(operand2)) 
-          | "*" -> result.Push (int32(operand1) * int32(operand2)) 
-          | "%" -> 
-            if (operand2 = 0)
-              then isCorrect <- false
-              else result.Push (int32(operand1) % int32(operand2)) 
-          | "/" ->
-            if (operand2 = 0)
-              then isCorrect <- false
-              else result.Push (int32(operand1) / int32(operand2)) 
-          | "^" ->
-            match operand1, operand2 with
-            | _ , x when x < 0 -> isCorrect <- false
-            | 0 , 0 -> isCorrect <- false
-            | val1 , val2 when val1 = 0 -> result.Push 0
-            | x , 0 -> result.Push 1
-            | val1 , val2 -> result.Push (pown val1 val2)
-            | _ , _ -> isCorrect <- false
-          | _ -> isCorrect <- false
-    | _ -> isCorrect <- false      
-  if isCorrect = false 
-    then None 
-    else 
-      if not (stack.Size() = 0) 
-      then None
-      else  Some(result.Pop() )
+  if stack.Size() = 0 
+    then Some 0
+    else
+    let result = Stack<int>([])
+    let mutable isCorrect = true
+    while (stack.Size() > 0) && (isCorrect) do
+      let token = stack.Pop()
+      match token with
+      | value when (isNumber (value)) -> result.Push (int32 (value))
+      | operator when (isOperator (operator.Chars(0)) ) && ((String.length operator = 1)) ->
+        if result.Size() < 2 
+          then isCorrect <- false
+          else
+            let operand2 = result.Pop()
+            let operand1 = result.Pop()
+            match operator with
+            | "+" -> result.Push (int32(operand1) + int32(operand2)) 
+            | "-" -> result.Push (int32(operand1) - int32(operand2)) 
+            | "*" -> result.Push (int32(operand1) * int32(operand2)) 
+            | "%" -> 
+              if (operand2 = 0)
+                then isCorrect <- false
+                else result.Push (int32(operand1) % int32(operand2)) 
+            | "/" ->
+              if (operand2 = 0)
+                then isCorrect <- false
+                else result.Push (int32(operand1) / int32(operand2)) 
+            | "^" ->
+              match operand1, operand2 with
+              | _ , x when x < 0 -> isCorrect <- false
+              | 0 , 0 -> isCorrect <- false
+              | val1 , val2 when val1 = 0 -> result.Push 0
+              | x , 0 -> result.Push 1
+              | val1 , val2 -> result.Push (pown val1 val2)
+              | _ , _ -> isCorrect <- false
+            | _ -> isCorrect <- false
+      | _ -> isCorrect <- false      
+    if not isCorrect 
+      then None 
+      else 
+        if (result.Size() <> 1) 
+          then None
+          else Some(result.Pop() )
+
 
 let  firstOperatorAfterSecond op1 op2 =
   (isLeftAssoc op1) && (precedence op1 <= precedence op2)
@@ -241,6 +245,10 @@ type TestStackCalculator () =
   member this.TestBracketsIncorrect str =
     Assert.AreEqual(None, stackCalc str values2)
 
+  [<Test>]
+  member this.TestEmptyString() =
+    let str = ""
+    Assert.AreEqual(Some 0, stackCalc str [])
 
   [<Test>]
   member this.TestValues() =
