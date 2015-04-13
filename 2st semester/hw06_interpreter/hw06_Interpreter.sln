@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "hw06_Interpreter", "hw06_Interpreter\hw06_Interpreter.fsproj", "{1773FACB-D0E6-4922-9398-3AE51101AE5E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1773FACB-D0E6-4922-9398-3AE51101AE5E}.Debug|x86.ActiveCfg = Debug|x86
+		{1773FACB-D0E6-4922-9398-3AE51101AE5E}.Debug|x86.Build.0 = Debug|x86
+		{1773FACB-D0E6-4922-9398-3AE51101AE5E}.Release|x86.ActiveCfg = Release|x86
+		{1773FACB-D0E6-4922-9398-3AE51101AE5E}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.TextStylePolicy = $2
+		$2.inheritsSet = null
+		$2.scope = text/x-fsharp
+		$0.FSharpFormattingPolicy = $3
+		$3.DefaultFormat = $4
+		$4.IndentOnTryWith = False
+		$4.ReorderOpenDeclaration = False
+		$4.SpaceAfterComma = True
+		$4.SpaceAfterSemicolon = True
+		$4.SpaceAroundDelimiter = True
+		$4.SpaceBeforeArgument = True
+		$4.SpaceBeforeColon = True
+		$3.scope = text/x-fsharp
+		$0.TextStylePolicy = $5
+		$5.FileWidth = 120
+		$5.TabWidth = 2
+		$5.IndentWidth = 2
+		$5.inheritsSet = Mono
+		$5.inheritsScope = text/plain
+		$5.scope = text/plain
+	EndGlobalSection
+EndGlobal
