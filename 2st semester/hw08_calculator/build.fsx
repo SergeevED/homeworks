@@ -3,20 +3,20 @@
 open Fake
 
 let buildDir = "./build/"
-let testDir  = "./test/"
+let testDir  = "./build/test/"
 
 Target "Clean" (fun _ ->
   CleanDirs [buildDir; testDir]
 )
 
 Target "BuildApp" (fun _ ->
-  !! "src/app/**/*.fsproj"
+  !! "src/**/*.fsproj"
     |> MSBuildRelease buildDir "Build"
     |> Log "AppBuild-Output: "
 )
 
 Target "BuildTest" (fun _ ->
-  !! "src/test/**/*.fsproj"
+  !! "test/**/*.fsproj"
     |> MSBuildDebug testDir "Build"
     |> Log "BuildTest-Output: "
 )
