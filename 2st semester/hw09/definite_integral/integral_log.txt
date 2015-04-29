@@ -1,0 +1,26 @@
+The tests were run on Intel Atom Processor Z2760 which has two cores.
+Every core has two virtual processors (Hyper-Threading Technology).
+(four threads in total)
+
+
+y = sin x, x in [0..100]
+
+Threads: 1. Step: 1.E-03. Elapsed time: 61.
+Threads: 2. Step: 1.E-03. Elapsed time: 58.
+Threads: 4. Step: 1.E-03. Elapsed time: 95.
+Threads: 8. Step: 1.E-03. Elapsed time: 126.
+
+Threads: 1. Step: 1.E-04. Elapsed time: 455.
+Threads: 2. Step: 1.E-04. Elapsed time: 301.
+Threads: 4. Step: 1.E-04. Elapsed time: 315.
+Threads: 8. Step: 1.E-04. Elapsed time: 404.
+
+Threads: 1. Step: 1.E-05. Elapsed time: 4220.
+Threads: 2. Step: 1.E-05. Elapsed time: 2396.
+Threads: 4. Step: 1.E-05. Elapsed time: 1471.
+Threads: 8. Step: 1.E-05. Elapsed time: 1636.
+
+Threads: 1. Step: 1.E-06. Elapsed time: 45086.
+Threads: 2. Step: 1.E-06. Elapsed time: 22946.
+Threads: 4. Step: 1.E-06. Elapsed time: 13950.
+Threads: 8. Step: 1.E-06. Elapsed time: 15644.
