@@ -1,3 +1,3 @@
-Homework_8 parallel execution
+Homework_9 parallel execution
 
 Предполагаемое время выполнения - 4ч. Реальное время выполнения - 4ч.
