@@ -1,0 +1,49 @@
+The tests were run on Intel Atom Processor Z2760 which has two cores. Every core has two virtual processors (Hyper-Threading Technology). 
+(four threads in total)
+
+
+
+
+Integer type:
+
+Threads: 1. Array size: 100. Elapsed time: 46.
+Threads: 2. Array size: 100. Elapsed time: 43.
+Threads: 4. Array size: 100. Elapsed time: 29.
+Threads: 8. Array size: 100. Elapsed time: 148.
+
+Threads: 1. Array size: 10000. Elapsed time: 58.
+Threads: 2. Array size: 10000. Elapsed time: 47.
+Threads: 4. Array size: 10000. Elapsed time: 63.
+Threads: 8. Array size: 10000. Elapsed time: 118.
+
+Threads: 1. Array size: 1000000. Elapsed time: 136.
+Threads: 2. Array size: 1000000. Elapsed time: 75.
+Threads: 4. Array size: 1000000. Elapsed time: 97.
+Threads: 8. Array size: 1000000. Elapsed time: 158.
+
+Threads: 1. Array size: 100000000. Elapsed time: 4401.
+Threads: 2. Array size: 100000000. Elapsed time: 3890.
+Threads: 4. Array size: 100000000. Elapsed time: 3670.
+Threads: 8. Array size: 100000000. Elapsed time: 3886.
+
+Double type:
+
+Threads: 1. Array size: 100. Elapsed time: 51.
+Threads: 2. Array size: 100. Elapsed time: 26.
+Threads: 4. Array size: 100. Elapsed time: 47.
+Threads: 8. Array size: 100. Elapsed time: 115.
+
+Threads: 1. Array size: 10000. Elapsed time: 52.
+Threads: 2. Array size: 10000. Elapsed time: 36.
+Threads: 4. Array size: 10000. Elapsed time: 68.
+Threads: 8. Array size: 10000. Elapsed time: 123.
+
+Threads: 1. Array size: 1000000. Elapsed time: 136.
+Threads: 2. Array size: 1000000. Elapsed time: 75.
+Threads: 4. Array size: 1000000. Elapsed time: 97.
+Threads: 8. Array size: 1000000. Elapsed time: 158.
+
+Threads: 1. Array size: 100000000. Elapsed time: 6156.
+Threads: 2. Array size: 100000000. Elapsed time: 5258.
+Threads: 4. Array size: 100000000. Elapsed time: 5081.
+Threads: 8. Array size: 100000000. Elapsed time: 5164.

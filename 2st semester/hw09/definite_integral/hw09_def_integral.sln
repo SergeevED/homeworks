@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "test", "test\test.fsproj", "{AD89BDAC-B2D4-47B9-A8EB-59887DD9E50A}"
 EndProject
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "src", "src\calc.fsproj", "{4C17BF65-9F5A-45B8-8CFB-84F874B6DA81}"
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "app", "app\app.fsproj", "{4C17BF65-9F5A-45B8-8CFB-84F874B6DA81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

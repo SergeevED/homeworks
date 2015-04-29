@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0e06959c-b535-4396-8f86-2f5295304863}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>calc</RootNamespace>
-    <AssemblyName>calc</AssemblyName>
+    <RootNamespace>maxElem</RootNamespace>
+    <AssemblyName>maxElem</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,12 +25,10 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="windowParametres.fs" />
-    <Compile Include="calculator.fs" />
+    <Compile Include="findMaxElem.fs" />
+    <Compile Include="program.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
 </Project>
