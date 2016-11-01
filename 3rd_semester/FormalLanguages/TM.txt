@@ -1,0 +1,325 @@
+
+s0 0 0 l s0
+s0 1 1 l s0
+s0 _ & r s1
+
+s1 0 0 r s1
+s1 1 1 r s1
+s1 _ $ l s2
+
+s2 0 Z l s3
+s2 1 U l s5
+s2 & & r s7
+
+s3 0 0 l s3
+s3 1 1 l s3
+s3 & & l s3
+s3 _ 0 r s4
+
+s4 0 0 r s4
+s4 1 1 r s4
+s4 & & r s4
+s4 Z Z l s2
+s4 U U l s2
+
+s5 0 0 l s5
+s5 1 1 l s5
+s5 & & l s5
+s5 _ 1 r s6
+
+s6 0 0 r s6
+s6 1 1 r s6
+s6 & & r s6
+s6 Z Z l s2
+s6 U U l s2
+
+s7 Z 0 r s7
+s7 U 1 r s7
+s7 $ $ l s7
+s7 0 0 l s7
+s7 1 1 l s7
+s7 & & l s8
+
+s8 0 Z l s9
+s8 1 U l s9
+s8 @ @ r s12
+
+s9 0 0 l s9
+s9 1 1 l s9
+s9 _ @ l s10
+s9 @ @ l s10
+
+s10 0 0 l s10
+s10 1 1 l s10
+s10 _ 0 r s11
+
+s11 0 0 r s11
+s11 1 1 r s11
+s11 @ @ r s11
+s11 Z Z l s8
+s11 U U l s8
+
+s12 Z 0 r s12
+s12 U 1 r s12
+s12 & & l s12
+s12 0 0 l s12
+s12 1 1 l s12
+s12 @ @ l s13
+
+s13 0 0 l s14
+
+s14 _ _ r HALT-REJECT
+s14 0 1 l s15
+
+s15 0 0 l s15
+s15 _ # l s16
+
+s16 _ 0 l s17
+
+s17 _ % r s18
+
+s18 0 0 r s18
+s18 # # r s19
+
+s19 0 Z r s20
+s19 1 U r s25
+s19 @ @ l s30
+
+s20 0 0 r s20
+s20 1 1 r s20
+s20 @ @ r s21
+
+s21 U U r s21
+s21 Z Z r s21
+s21 1 1 l s22
+s21 0 Z l s23
+
+s23 Z Z l s23
+s23 U U l s23
+s23 @ @ l s24
+
+s24 0 0 l s24
+s24 1 1 l s24
+s24 U U r s19
+s24 Z Z r s19
+
+s25 0 0 r s25
+s25 1 1 r s25
+s25 @ @ r s26
+
+s26 U U r s26
+s26 Z Z r s26
+s26 0 0 l s46
+s26 1 U l s28
+
+s28 Z Z l s28
+s28 U U l s28
+s28 @ @ l s29
+
+s29 0 0 l s29
+s29 1 1 l s29
+s29 Z Z r s19
+s29 U U r s19
+
+s30 Z Z l s30
+s30 U U l s30
+s30 # # l s31
+
+s31 0 0 r HALT-ACCEPT
+s31 1 1 r HALT-REJECT
+
+s22 0 0 r s22
+s22 1 1 r s22
+s22 @ @ r s22
+s22 Z Z r s22
+s22 U U r s22
+s22 & & l s63
+
+s63 0 0 l s63
+s63 1 1 l s63
+s63 Z 0 l s63
+s63 U 1 l s63
+s63 @ @ l s63
+s63 # # l s64
+
+s64 0 1 r s65
+s64 1 1 r s65
+
+s65 0 0 r s65
+s65 1 1 r s65
+s65 # # r s65
+s65 @ @ l s66
+
+s66 U U l s66
+s66 Z Z l s66
+s66 0 Z l s67
+s66 1 U l s69
+s66 # # r s71
+
+s67 0 0 l s67
+s67 1 1 l s67
+s67 # # l s67
+s67 % % l s67
+s67 _ 0 r s68
+
+s68 0 0 r s68
+s68 1 1 r s68
+s68 # # r s68
+s68 % % r s68
+s68 U U l s66
+s68 Z Z l s66
+
+s69 0 0 l s69
+s69 1 1 l s69
+s69 # # l s69
+s69 % % l s69
+s69 _ 1 r s70
+
+s70 0 0 r s70
+s70 1 1 r s70
+s70 # # r s70
+s70 % % r s70
+s70 U U l s66
+s70 Z Z l s66
+
+s71 U 1 r s71
+s71 Z 0 r s71
+s71 @ @ l s72
+
+s72 0 1 l s72
+s72 1 0 r s73
+s72 # # r s77
+
+s73 0 0 r s73
+s73 1 1 r s73
+s73 @ @ r s74
+
+s74 0 0 r s74
+s74 1 1 r s74
+s74 & & l s75
+
+s75 0 1 l s75
+s75 1 0 l s76
+
+s76 0 0 l s76
+s76 1 1 l s76
+s76 @ @ l s72
+
+s77 1 _ r s77
+s77 @ @ l s37
+
+s37 _ _ l s37
+s37 # # l s37
+s37 % % l s78
+s37 0 0 l s37
+s37 1 1 l s37
+
+s78 0 0 l s78
+s78 1 1 l s78
+s78 _ _ r s38
+
+s38 0 _ r s39
+s38 1 _ r s41
+s38 % % r s43
+
+s39 0 0 r s39
+s39 1 1 r s39
+s39 % % r s39
+s39 # # r s39
+s39 _ 0 l s40
+
+s40 0 0 l s40
+s40 1 1 l s40
+s40 % % l s40
+s40 # # l s40
+s40 _ _ r s38
+
+s41 0 0 r s41
+s41 1 1 r s41
+s41 % % r s41
+s41 # # r s41
+s41 _ 1 l s42
+
+s42 0 0 l s42
+s42 1 1 l s42
+s42 % % l s42
+s42 # # l s42
+s42 _ _ r s38
+
+s43 0 0 r s43
+s43 1 1 r s43
+s43 % % r s43
+s43 # # r s19
+
+s46 0 0 r s46
+s46 1 1 r s46
+s46 Z 0 r s46
+s46 U 1 r s46
+s46 @ @ r s46
+s46 & & l s47
+
+s47 0 0 l s47
+s47 1 1 l s47
+s47 Z 0 l s47
+s47 U 1 l s47
+s47 @ @ l s47
+s47 # # l s48
+
+s48 0 0 r s49
+s48 1 0 r s49
+
+s49 0 0 r s49
+s49 1 1 r s49
+s49 # # r s49
+s49 @ @ l s50
+
+s50 1 0 l s50
+s50 0 1 r s51
+
+s51 0 0 r s51
+s51 1 1 r s51
+s51 @ @ r s52
+
+s52 0 _ r s52
+s52 1 _ r s52
+s52 & & r s60
+
+s60 0 0 r s60
+s60 1 1 r s60
+s60 $ $ l s53
+
+s53 0 Z l s54
+s53 1 U l s56
+s53 & & r s58
+
+s54 0 0 l s54
+s54 1 1 l s54
+s54 & & l s54
+s54 _ 0 r s55
+
+s55 0 0 r s55
+s55 1 1 r s55
+s55 & & r s55
+s55 Z Z l s53
+s55 U U l s53
+
+s56 0 0 l s56
+s56 1 1 l s56
+s56 & & l s56
+s56 _ 1 r s57
+
+s57 0 0 r s57
+s57 1 1 r s57
+s57 & & r s57
+s57 Z Z l s53
+s57 U U l s53
+
+s58 Z 0 r s58
+s58 U 1 r s58
+s58 $ $ l s59
+
+s59 0 0 l s59
+s59 1 1 l s59
+s59 & & l s59
+s59 @ @ l s59
+s59 # # r s19
