@@ -5,9 +5,8 @@ log = []
 
 def find_rule():
     for rule in grammar:
-        x = input.find(rule[0])
-        if x != -1:
-            return (rule, x)
+        if input.find(rule[0]) != -1:
+            return rule
     return None
 
 
@@ -17,11 +16,10 @@ for line in open('Grammar.txt'):
 
 while True:
     log.append(input + '\n')
-    r = find_rule()
-    if r is None:
+    rule = find_rule()
+    if rule is None:
         break
     else:
-        (rule, index) = r
         input = input.replace(rule[0], rule[1], 1)
         log.append('Apply {} -> {}:\n'.format(rule[0], rule[1]))
 
