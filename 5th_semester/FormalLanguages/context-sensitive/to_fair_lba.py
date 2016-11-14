@@ -27,6 +27,18 @@ def cmp_alphabet(a, b):
     return cmp(a[::-1], b[::-1])
 
 
+# noinspection PyShadowingNames
+def gen_right_side(left_side, given_right_side):
+    right_side = given_right_side
+    if right_side == "-":
+        right_side = left_side
+    else:
+        for i in range(3):
+            if right_side[i] == '.':
+                right_side = right_side[:i] + left_side[i] + right_side[(i + 1):]
+    return right_side
+
+
 for raw_line in lines_in:
     if raw_line.startswith(";") or raw_line.startswith("\n"):
         fout.write(raw_line)
@@ -39,10 +51,7 @@ for raw_line in lines_in:
     left_sides.sort(cmp_alphabet)
 
     for left_side in left_sides:
-        if prod[2] == "-":
-            right_side = left_side
-        else:
-            right_side = prod[2]
+        right_side = gen_right_side(left_side, prod[2])
         # before "merging" the tracks
         print("{} {} {} {} {}".format(
             prod[0], left_side, right_side,

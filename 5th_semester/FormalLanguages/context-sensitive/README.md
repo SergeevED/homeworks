@@ -10,6 +10,8 @@ Steps:
 
 2. You may test the LBA [on a website](http://morphett.info/turing/turing.html).
 
+    Add `0 * * * s100` at the top of the input field.
+
 3. Translate LBA to a CSG (TODO)
 
 4. ???

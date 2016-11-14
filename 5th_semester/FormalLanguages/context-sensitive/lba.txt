@@ -18,17 +18,18 @@
 
 ; Input alphabet: {'0', '1'}. Input number is little-endian.
 ; '&' and '#' are begin and end markers, respectively.
-; '.' means any symbol. The "fair" LBA can be generated with `to_fair_lba.py`.
+; '.' means '0' or '1'. The "fair" LBA can be generated with `to_fair_lba.py`.
 ; '-' means "leave the cell unchanged".
 
 
 ; BEGIN - input is located on track A
 
 
-; head on '&'
+; [1], head on '&'
 ; when input is "0" or "1":
 ;   true  -> reject
-;   false -> go to '&'
+;   false -> [2]
+; ~~~> head to the right of '&'
 
 s100 &   -   r s101
 s101 ... -   r s102
@@ -39,8 +40,63 @@ s102 1.. -   l s103
 
 s103 0.. -   l s103
 s103 1.. -   l s103
-s103 &   -   r HALT-ACCEPT
+s103 &   -   r s200
 
-; head to the right of '&'
-; c <- 1...10
+
+; [2], head to the right of '&'
+; c <- 1...10 // e.g. 11110
+; -> [3]
+; ~~~> head on '#'
+
+s200 ... ..1 r s200
+s200 #   -   l s201
+s201 ..1 ..0 r s300
+
+
+; [3], head on '#'
+; b <- a
+; -> [4]
+; ~~~> head to the left of '#'
+
+s300 #   -   l s301
+s301 1.. 11. l s301
+s301 0.. 00. l s301
+s301 &   -   r s302
+
+s302 ... -   r s302
+s302 #   -   l HALT-ACCEPT
+
+
+; [4], head to the left of '#'
+; b <- b + c
+; when overflow at the top digit
+;   true  -> [5] // has not crossed 0
+;   false -> [6] // has crossed 0
+; ~~~> head on '&'
+
+
+; [5], head on '&'
+; when b == 0
+;   true  -> reject // remainder == 0
+;   false -> [4]
+; ~~~> head to the left of '#'
+
+
+; [6], head on '&'
+; c--
+; -> [7]
+; ~~~> head to the left of '#'
+
+
+; [7], head to the left of '#'
+; b <- b + c
+; -> [8]
+; ~~~> head on '&'
+
+
+; [8], head on '&'
+; when b == 0
+;   true  -> accept // reached input number with no divisors found
+;   false -> [3]
+; ~~~> head on '#'
 
