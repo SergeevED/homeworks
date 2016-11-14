@@ -1,0 +1,46 @@
+; LBA that checks whether a given number is prime
+
+; The LBA is multi-track:
+; -------+-------------------+---------
+;  track |    description    | example
+; -------+-------------------+---------
+;    a   | input (untouched) |  1011
+; -------+-------------------+---------
+;    b   |   working track   |  0101
+; -------+-------------------+---------
+;    с   |    subtrahend     |  1110
+
+; Values on all tracks are two's complement.
+; The top digits on tracks a and b are assumed 0, on track c - 1. These are not stored.
+
+; This LBA may be represented as a single-track LBA with values in '0'..'7', where
+; '0' == 000 on tracks, '1' == 100, '2' == 010 etc. (big-endian here)
+
+; Input alphabet: {'0', '1'}. Input number is little-endian.
+; '&' and '#' are begin and end markers, respectively.
+; '.' means any symbol. The "fair" LBA can be generated with `to_fair_lba.py`.
+; '-' means "leave the cell unchanged".
+
+
+; BEGIN - input is located on track A
+
+
+; head on '&'
+; when input is "0" or "1":
+;   true  -> reject
+;   false -> go to '&'
+
+s100 &   -   r s101
+s101 ... -   r s102
+
+s102 #   -   l HALT-REJECT
+s102 0.. -   l s103
+s102 1.. -   l s103
+
+s103 0.. -   l s103
+s103 1.. -   l s103
+s103 &   -   r HALT-ACCEPT
+
+; head to the right of '&'
+; c <- 1...10
+
