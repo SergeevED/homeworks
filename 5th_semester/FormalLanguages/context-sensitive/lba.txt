@@ -50,21 +50,21 @@ s103 &   -   r s200
 
 s200 ... ..1 r s200
 s200 #   -   l s201
-s201 ..1 ..0 r s300
+s201 ..1 ..0 r s202
+s202 #   -   l s300
 
 
-; [3], head on '#'
+; [3], head to the left of '#'
 ; b <- a
 ; -> [4]
 ; ~~~> head to the left of '#'
 
-s300 #   -   l s301
-s301 1.. 11. l s301
-s301 0.. 00. l s301
-s301 &   -   r s302
+s300 1.. 11. l s300
+s300 0.. 00. l s300
+s300 &   -   r s301
 
-s302 ... -   r s302
-s302 #   -   l HALT-ACCEPT
+s301 ... -   r s301
+s301 #   -   l s400
 
 
 ; [4], head to the left of '#'
@@ -72,31 +72,93 @@ s302 #   -   l HALT-ACCEPT
 ; when overflow at the top digit
 ;   true  -> [5] // has not crossed 0
 ;   false -> [6] // has crossed 0
-; ~~~> head on '&'
+; ~~~> head to the right of '&'
+
+; no overflow
+s400 .00 .00 l s400
+s400 .01 .11 l s400
+s400 .10 .10 l s400
+s400 .11 .01 l s401
+
+; overflow
+s401 .00 .10 l s400
+s401 .01 .01 l s401
+s401 .10 .00 l s401
+s401 .11 .11 l s401
+
+; end
+s401 &   -   r s500
+s400 &   -   r s600
 
 
-; [5], head on '&'
+; [5], head to the right of '&'
 ; when b == 0
 ;   true  -> reject // remainder == 0
 ;   false -> [4]
 ; ~~~> head to the left of '#'
 
+s500 .0. -   r s500
+s500 .1. -   r s501
+s500 #   -   l HALT-REJECT
 
-; [6], head on '&'
-; c--
+s501 ... -   r s501
+s501 #   -   l s400
+
+
+; [6], head to the right of '&'
+; c-- // c += 1...1
 ; -> [7]
 ; ~~~> head to the left of '#'
 
+; go to the left of '#'
+s600 ... -   r s600
+s600 #   -   l s601
+
+; no overflow
+s601 ..0 ..1 l s601
+s601 ..1 ..0 l s602
+
+; overflow
+s602 ..0 ..0 l s602
+s602 ..1 ..1 l s602
+
+; end - go to the left of '#'
+s601 &   -   r s603
+s602 &   -   r s603
+s603 ... -   r s603
+s603 #   -   l s700
 
 ; [7], head to the left of '#'
-; b <- b + c
+; b <- a + c
 ; -> [8]
-; ~~~> head on '&'
+; ~~~> head to the right of '&'
+
+; no overflow
+s700 0.0 000 l s700
+s700 0.1 011 l s700
+s700 1.0 110 l s700
+s700 1.1 101 l s701
+
+; overflow
+s701 0.0 010 l s700
+s701 0.1 001 l s701
+s701 1.0 100 l s701
+s701 1.1 111 l s701
+
+; end
+s701 &   -   r s800
+s700 &   -   r s800
 
 
-; [8], head on '&'
+; [8], head to the right of '&'
 ; when b == 0
 ;   true  -> accept // reached input number with no divisors found
 ;   false -> [3]
-; ~~~> head on '#'
+; ~~~> head to the left of '#'
 
+s800 .0. -   r s800
+s800 .1. -   r s801
+s800 #   -   l HALT-ACCEPT
+
+s801 ... -   r s801
+s801 #   -   l s300

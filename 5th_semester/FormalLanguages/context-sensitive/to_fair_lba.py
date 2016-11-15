@@ -1,13 +1,26 @@
-# Usage: python to_fair_lba.py <in-file> <out-file>
+# Usage: python to_fair_lba.py <in-file> <out-file> [-v]
+# Flags:
+#   -v  preserve comments and empty lines
 import re
 import sys
 
 lines_in = open(sys.argv[1], 'r')
 fout = open(sys.argv[2], 'w+')
 
-fout.write("""; Fair LBA generated with <3
+verbose = False
+if len(sys.argv) > 3 and sys.argv[4] == "-v":
+    verbose = True
+
+if verbose:
+    fout.write("""; Fair LBA generated with <3
 ; Alphabet: {'0'..'7', '&', '#')
-; Input alphabet: {'0', '1'}, where '0' == 000, '1' == 100\n\n""")
+; Input alphabet: {'0', '1'}, where '0' == 000, '1' == 100
+
+; Uncomment when testing on the website:
+; 0 * * * s100\n\n""")
+else:
+    fout.write("""; Comment when NOT testing on the website:
+0 * * * s100\n\n""")
 
 alphabet = {
     "&": "&",
@@ -41,7 +54,8 @@ def gen_right_side(left_side, given_right_side):
 
 for raw_line in lines_in:
     if raw_line.startswith(";") or raw_line.startswith("\n"):
-        fout.write(raw_line)
+        if verbose:
+            fout.write(raw_line)
         continue
 
     prod = raw_line.strip("\n").split()
