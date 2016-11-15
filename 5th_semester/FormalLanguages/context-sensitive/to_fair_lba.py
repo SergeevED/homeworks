@@ -19,8 +19,7 @@ if verbose:
 ; Uncomment when testing on the website:
 ; 0 * * * s100\n\n""")
 else:
-    fout.write("""; Comment when NOT testing on the website:
-0 * * * s100\n\n""")
+    fout.write("; 0 * * * s100\n")
 
 alphabet = {
     "&": "&",
