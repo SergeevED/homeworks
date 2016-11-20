@@ -29,10 +29,10 @@ transitions = [x.strip("\n").split()
                if not (x.startswith(";") or x.startswith("\n"))]
 init_state = "s100"
 all_states = set([tr[0] for tr in transitions] + [tr[4] for tr in transitions])
-finite_states = {"HALT-ACCEPT", "HALT-REJECT"}
+finite_states = {"HALT-ACCEPT"}
 non_finite_states = all_states - finite_states
 axiom = 'S'  # start non-terminal
-axiom2 = 'A'  # additional state
+axiom2 = 'D'  # additional state
 
 
 # debug
@@ -44,7 +44,6 @@ axiom2 = 'A'  # additional state
 def exists_tr(state_before, value_before, state_after, value_after, shift):
     return len([transition for transition in transitions
                 if transition == [state_before, value_before, value_after, shift, state_after]]) == 1
-
 
 # 1:    A1 → [q0, ¢, a, a, $]
 pr(["{0} -> [{1},&,{2},{2},#]".format(axiom, init_state, t)
@@ -174,6 +173,17 @@ pr(["[{0},{2},{5}][{4},{6},#] -> [{3},{5}][{1},{4},{6},#]".format(q, p, x, y, z,
     for a in terminals
     for b in terminals
     if exists_tr(q, x, p, y, 'r')])
+
+# 6.4:  [¢, Z, b] [q, X, a] → [¢, p, Z, b] [Y, a],  if (p, Y, L) ∈ δ(q, X) and q ∈ Q \ F
+pr(["[&,{4},{6}][{0},{2},{5}] -> [&,{1},{4},{6}][{3},{5}]".format(q, p, x, y, z, a, b)
+    for q in non_finite_states
+    for p in all_states
+    for x in tape_symbols
+    for y in tape_symbols
+    for z in tape_symbols
+    for a in terminals
+    for b in terminals
+    if exists_tr(q, x, p, y, 'l')])
 pr1()
 print("part 6/9 done")
 
