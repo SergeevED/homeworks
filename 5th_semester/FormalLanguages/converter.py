@@ -1,5 +1,7 @@
-tm_code_file = open('TM.txt', encoding='utf8')
-grammar_code_file = open('Grammar.txt', 'w', encoding='utf8')
+# produces type 0 production grammar rules by TM transition rules
+
+tm_code_file = open('TM.txt')
+grammar_code_file = open('grammar.txt', 'w')
 
 tm_tape_alphabet = ['0', '1', 'B', 'Z', 'U', '%', '#', '@', '&', '$']
 
@@ -39,6 +41,7 @@ def generate_rules(tm_rule):
 
 # Returns grammar rules which transform Turing machine tape into entry symbols. These rules are applied
 # when Turing machine is in accepting state.
+
 def generate_finishing_rules():
     rules = []
     for symbol in grammar_symbols:
