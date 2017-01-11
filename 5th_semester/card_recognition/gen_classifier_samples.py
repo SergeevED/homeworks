@@ -10,14 +10,13 @@ output_path = 'classifier_samples/'
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
-img_width = 500
-img_height = 690
-
 suits = ['d', 'h', 'c', 's']
 ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
 
 def cut_corners(image):
+    img_width = 500
+    img_height = 690
     x_padding = 0
     y_padding = 0
     corner_width = 110
