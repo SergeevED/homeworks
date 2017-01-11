@@ -35,8 +35,11 @@ alphabet = {
 }
 
 
-def cmp_alphabet(a, b):
-    return cmp(a[::-1], b[::-1])
+# def cmp_alphabet(a, b):
+#     def cmp(a, b):
+#         return (a > b) - (a < b)
+#
+#     return cmp(a[::-1], b[::-1])
 
 
 # noinspection PyShadowingNames
@@ -61,7 +64,7 @@ for raw_line in lines_in:
 
     pattern = re.compile("^{}$".format(prod[1]))
     left_sides = [x for x in alphabet if pattern.match(x)]
-    left_sides.sort(cmp_alphabet)
+    left_sides.sort(reverse=True)
 
     for left_side in left_sides:
         right_side = gen_right_side(left_side, prod[2])
@@ -79,4 +82,4 @@ for raw_line in lines_in:
         ))
 
 fout.close()
-print 'ok'
+print('ok')

@@ -2,7 +2,7 @@
 import sys
 
 if len(sys.argv) < 2:
-    print "Usage: python expand_lba.py <single-track tape state>"
+    print("Usage: python expand_lba.py <single-track tape state>")
     sys.exit(0)
 
 dict = {
@@ -21,4 +21,4 @@ dict = {
 for i in range(3):
     for c in sys.argv[1]:
         print(dict[c][i]),
-    print ""
+    print("")
