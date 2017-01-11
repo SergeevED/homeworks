@@ -1,0 +1,2 @@
+# Ignore generated classifier samples, at least for now
+/classifier_samples/
