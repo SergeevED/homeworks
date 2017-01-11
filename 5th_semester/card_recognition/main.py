@@ -28,6 +28,7 @@ cv2.imwrite(path_to_images + '/20_thresh.jpg', thresh)
 
 blur_thresh = thresh
 
+
 _, contours, _ = cv2.findContours(blur_thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
 
 cont_im = np.ones((len(origin_image), len(origin_image[0]), 3)) * 255
@@ -43,7 +44,19 @@ for cnt in contours:
         epsilon = 0.075 * cv2.arcLength(cnt, True)
         approx = cv2.approxPolyDP(cnt, epsilon, True)
         if len(approx) == 4:
-            filtered_contours.append(cnt)
+            filtered_contours.append(approx)
+
+# rotate and scale cards
+for i in range(len(filtered_contours)):
+    if cv2.contourArea(filtered_contours[i], True) < 0:
+        filtered_contours[i] = filtered_contours[i][::-1]
+    scaled_length = 250
+    scaled_width = 350
+    contour = np.array([[float(arr[0][0]), float(arr[0][1])] for arr in filtered_contours[i]], np.float32)
+    h = np.array([ [0,0],[scaled_length,0],[scaled_length,scaled_width],[0,scaled_width] ], np.float32)
+    transform = cv2.getPerspectiveTransform(contour, h)
+    warp = cv2.warpPerspective(origin_image, transform, (scaled_length, scaled_width))
+    cv2.imwrite(path_to_images + '/' + str(i) + '_card.jpg', warp)
 
 # show stats for biggest contours
 #orig_image_area = len(origin_image) * len(origin_image[0])
