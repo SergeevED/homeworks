@@ -9,8 +9,8 @@ output_path = "cards/"
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
-out_height = 350
 out_width = 250
+out_height = 350
 
 # resize images
 for filename in os.listdir(input_path):
