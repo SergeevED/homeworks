@@ -3,6 +3,8 @@ import numpy as np
 import os
 import time
 
+from util import preprocess
+
 input_path = 'data_gen/cards/'
 output_path = 'classifier_samples/'
 if not os.path.exists(output_path):
@@ -13,28 +15,6 @@ img_height = 690
 
 suits = ['d', 'h', 'c', 's']
 ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-
-
-def preprocess(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # cv2.imwrite(output_path + '/10_gray.jpg', gray)
-
-    denoised = cv2.fastNlMeansDenoising(gray, h=50, templateWindowSize=9, searchWindowSize=21)
-    # cv2.imwrite(output_path + '/20_denoised.jpg', denoised)
-
-    # blur = gray
-    blur = cv2.GaussianBlur(denoised, (5, 5), 2)
-    # cv2.imwrite(output_path + '/30_blur.jpg', blur)
-
-    thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 9, 0)
-    # cv2.imwrite(output_path + '/30_thresh.jpg', thresh)
-
-    denoised_thresh = cv2.fastNlMeansDenoising(thresh, h=40, templateWindowSize=9, searchWindowSize=21)
-    # cv2.imwrite(output_path + '/40_denoised_thresh.jpg', denoised_thresh)
-
-    # blur_thresh = thresh
-    blur_thresh = cv2.GaussianBlur(denoised_thresh, (5, 5), 4)
-    return blur_thresh
 
 
 def cut_corners(image):
