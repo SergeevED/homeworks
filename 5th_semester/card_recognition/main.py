@@ -48,12 +48,8 @@ def filter_contours(contours, origin_image_area):
             approx = cv2.approxPolyDP(cnt, epsilon, True)
             if len(approx) == 4:
                 filtered_contours.append(approx)
-    return filtered_contours
 
-
-# rotate and scale cards
-def get_cards_orthographic(origin_image, filtered_contours):
-    cards = []
+    contours_to_delete = []
     for i in range(len(filtered_contours)):
         flag = False
         for j in range(i):
@@ -62,12 +58,21 @@ def get_cards_orthographic(origin_image, filtered_contours):
                                 cv2.pointPolygonTest(filtered_contours[i], tuple(filtered_contours[j][k][0]),
                                                      False) > 0:
                     flag = True
+                    contours_to_delete.append(i)
                     break
             if flag:
                 break
 
-        if flag:
-            continue
+    filtered_contours = [filtered_contours[i] for i in range(len(filtered_contours)) if i not in contours_to_delete]
+
+
+    return filtered_contours
+
+
+# rotate and scale cards
+def get_cards_orthographic(origin_image, filtered_contours):
+    cards = []
+    for i in range(len(filtered_contours)):
 
         # if first and second vertices are a small side take vertices starting from next vertex
         first_side = (filtered_contours[i][0][0][0] - filtered_contours[i][1][0][0]) ** 2 + \
@@ -198,8 +203,8 @@ def load_cards(path):
 def main():
     filename = sys.argv[1] if len(sys.argv) > 1 else "images/t1.jpg"
 
-    # cards = extract_cards_orthographic(filename)
-    cards = load_cards(output_path)  # TODO: clear out folder
+    cards = extract_cards_orthographic(filename)
+    # cards = load_cards(output_path)  # TODO: clear out folder
     print("Extracted {} cards. Classifying...".format(len(cards)))
 
     # classify cards
