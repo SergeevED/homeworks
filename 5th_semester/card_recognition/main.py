@@ -114,24 +114,37 @@ def img_diff(img1, img2):
     return np.sum(diff)
 
 
+def rotate_180(img):
+    height = len(img)
+    width = len(img[0])
+    center = (width / 2, height / 2)
+    matrix = cv2.getRotationMatrix2D(center, 180, 1.0)
+    return cv2.warpAffine(img, matrix, (width, height))
+
+
+def card_diff(found_card, sample):
+    diff1 = img_diff(found_card, sample)
+    diff2 = img_diff(found_card, rotate_180(sample))
+    return (diff1 + diff2) / 2
+
+
 def find_closest_card(raw_img, samples, verbose=False):
     assert (len(raw_img) == sample_height)
     assert (len(raw_img[0]) == sample_width)
     img = preprocess(raw_img)
     img = cv2.equalizeHist(img)
-    diff_results = [(sample[0], img_diff(img, sample[1])) for sample in samples]
+    diff_results = [(sample[0], card_diff(img, sample[1])) for sample in samples]
     sorted_diff_results = sorted(diff_results, key=itemgetter(1))
     if verbose:
         print("Diff for another image:")
-        for (card_name, diff) in sorted_diff_results[:20]:
+        for (card_name, diff) in sorted_diff_results[:5]:
             print("\t\t{}\t{}".format(card_name, diff))
     return sorted_diff_results[0][0]
 
 
 # classify found cards
 def classify_cards(cards, samples, verbose=False):
-    for card in cards:
-        print(find_closest_card(card, samples, verbose=verbose))
+    return [find_closest_card(card, samples, verbose=verbose) for card in cards]
 
 
 def extract_cards_orthographic(filename):
@@ -175,12 +188,15 @@ def load_cards(path):
 def main():
     filename = sys.argv[1] if len(sys.argv) > 1 else "images/t3.jpg"
 
-    # cards = extract_cards_orthographic(filename)
-    cards = load_cards(output_path)
+    cards = extract_cards_orthographic(filename)
+    # cards = load_cards(output_path) # TODO: clear out folder
+    print("Extracted {} cards. Classifying...".format(len(cards)))
 
     # classify cards
     samples = load_samples()
-    classify_cards(cards, samples, verbose=False)
+    answers = classify_cards(cards, samples, verbose=False)
+    for card_name in answers:
+        print(card_name)
 
 
 main()
