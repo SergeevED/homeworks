@@ -1,0 +1,5 @@
+Commit 7757da04
+Total:
+Cards guessed:	68/88	77.27%
+Ranks guessed:	84/88	95.45%
+Suits guessed:	70/88	79.54%

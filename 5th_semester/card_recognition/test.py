@@ -80,9 +80,9 @@ def test_all():
 
     print("")
     print("Total:")
-    print("Cards guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_cards, total_cards, 100.0 * guessed_cards / total_cards))
-    print("Ranks guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_ranks, total_cards, 100.0 * guessed_ranks / total_cards))
-    print("Suits guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_suits, total_cards, 100.0 * guessed_suits / total_cards))
+    print("Cards guessed:\t{:2}/{:2}\t{:3.2f}%".format(guessed_cards, total_cards, 100.0 * guessed_cards / total_cards))
+    print("Ranks guessed:\t{:2}/{:2}\t{:3.2f}%".format(guessed_ranks, total_cards, 100.0 * guessed_ranks / total_cards))
+    print("Suits guessed:\t{:2}/{:2}\t{:3.2f}%".format(guessed_suits, total_cards, 100.0 * guessed_suits / total_cards))
 
 
 if len(sys.argv) < 2:
