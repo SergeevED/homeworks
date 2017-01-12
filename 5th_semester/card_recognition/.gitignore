@@ -1,5 +1,3 @@
-# Ignore test images
-/images/
 # Ignore output
 /out/
 

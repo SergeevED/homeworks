@@ -196,7 +196,7 @@ def load_cards(path):
 
 
 def main():
-    filename = sys.argv[1] if len(sys.argv) > 1 else "images/t3.jpg"
+    filename = sys.argv[1] if len(sys.argv) > 1 else "images/t1.jpg"
 
     # cards = extract_cards_orthographic(filename)
     cards = load_cards(output_path)  # TODO: clear out folder
