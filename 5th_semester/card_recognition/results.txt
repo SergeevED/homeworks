@@ -1,5 +1,11 @@
 Commit 7757da04
-Total:
+Total (till t5):
 Cards guessed:	68/88	77.27%
 Ranks guessed:	84/88	95.45%
 Suits guessed:	70/88	79.54%
+
+Samples without blur, tests with blur
+Total (till t5):
+Cards guessed:	72/88	81.82%
+Ranks guessed:	85/88	96.59%
+Suits guessed:	74/88	84.09%
