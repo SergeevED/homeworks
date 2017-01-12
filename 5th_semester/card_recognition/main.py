@@ -117,7 +117,7 @@ def load_samples():
             # read grayscale image
             sample_card_image = cv2.imread(filepath, 0)
             if sample_card_image is not None:
-                out_samples.append((sample_card_name, sample_card_image))
+                out_samples.append((sample_card_name, sample_card_image, rotate_180(sample_card_image)))
     return out_samples
 
 
@@ -143,9 +143,9 @@ def rotate_180(img):
     return cv2.warpAffine(img, matrix, (width, height))
 
 
-def card_diff(found_card, sample, verbose=False):
+def card_diff(found_card, sample, rotated_sample, verbose=False):
     diff1 = img_diff(found_card, sample, verbose=verbose)
-    diff2 = img_diff(found_card, rotate_180(sample), verbose=verbose)
+    diff2 = img_diff(found_card, rotated_sample, verbose=verbose)
     return (diff1 + diff2) / 2
 
 
@@ -154,7 +154,7 @@ def find_closest_card(raw_img, samples, verbose=False):
     assert (len(raw_img[0]) == sample_width)
     img = preprocess(raw_img)
     # img = cv2.equalizeHist(img)
-    diff_results = [(sample[0], card_diff(img, sample[1])) for sample in samples]
+    diff_results = [(sample[0], card_diff(img, sample[1], sample[2])) for sample in samples]
     sorted_diff_results = sorted(diff_results, key=itemgetter(1))
     if verbose:
         print("Diff for another image:")
@@ -220,7 +220,7 @@ def main(use_cached_extracted_cards=False):
         cards = load_cards(output_path)
         print("Loaded {} cards from {}. Classifying...".format(len(cards), output_path))
 
-# classify cards
+    # classify cards
     samples = load_samples()
     answers = classify_cards(cards, samples, verbose=False)
     for card_name in answers:
