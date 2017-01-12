@@ -21,8 +21,8 @@ if not os.path.exists(output_path):
     os.makedirs(output_path)
 
 samples_path = "classifier_samples/"
-sample_width = 250
-sample_height = 350
+sample_width = 400
+sample_height = 560
 
 
 def preprocess_orig(orig_image):
@@ -83,12 +83,10 @@ def get_cards_orthographic(origin_image, filtered_contours):
         if cv2.contourArea(filtered_contours[i], True) < 0:
             filtered_contours[i] = filtered_contours[i][::-1]
 
-        scaled_length = 250
-        scaled_width = 350
         contour = np.array([[float(arr[0][0]), float(arr[0][1])] for arr in filtered_contours[i]], np.float32)
-        h = np.array([[0, 0], [scaled_length, 0], [scaled_length, scaled_width], [0, scaled_width]], np.float32)
+        h = np.array([[0, 0], [sample_width, 0], [sample_width, sample_height], [0, sample_height]], np.float32)
         transform = cv2.getPerspectiveTransform(contour, h)
-        warp = cv2.warpPerspective(origin_image, transform, (scaled_length, scaled_width))
+        warp = cv2.warpPerspective(origin_image, transform, (sample_width, sample_height))
         cards.append(warp)
         cv2.imwrite(os.path.join(output_path, "card_{:02}.jpg".format(i)), warp)
     return cards
@@ -96,7 +94,7 @@ def get_cards_orthographic(origin_image, filtered_contours):
 
 def load_samples():
     suits = ['d', 'h', 'c', 's']
-    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
     out_samples = []
     for rank in ranks:
         for suit in suits:
