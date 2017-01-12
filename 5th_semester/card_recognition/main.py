@@ -7,6 +7,8 @@ import sys
 
 from operator import itemgetter
 
+import shutil
+
 from util import preprocess
 
 debug = False
@@ -62,11 +64,17 @@ def filter_contours(contours, origin_image_area):
                     break
             if flag:
                 break
-
     filtered_contours = [filtered_contours[i] for i in range(len(filtered_contours)) if i not in contours_to_delete]
 
+    def by_center_location_key(contour):
+        # top to bottom, left to right
+        moments = cv2.moments(contour)
+        center_x = int(moments['m10'] / moments['m00'])
+        center_y = int(moments['m01'] / moments['m00'])
+        return center_y, center_x
 
-    return filtered_contours
+    sorted_contours = sorted(filtered_contours, key=by_center_location_key)
+    return sorted_contours
 
 
 # rotate and scale cards
@@ -94,15 +102,13 @@ def get_cards_orthographic(origin_image, filtered_contours):
         transform = cv2.getPerspectiveTransform(contour, h)
         warp = cv2.warpPerspective(origin_image, transform, (sample_width, sample_height))
         cards.append(warp)
-        cv2.imwrite(os.path.join(output_path, "card_{:02}.jpg".format(i)), warp)
+        cv2.imwrite(os.path.join(output_path, "card_{:02}.jpg".format(i + 1)), warp)
     return cards
 
 
 def load_samples():
-    # suits = ['d', 'h', 'c', 's']
-    suits = ['s']
-    # ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
-    ranks = ['3']
+    suits = ['d', 'h', 'c', 's']
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
     out_samples = []
     for rank in ranks:
         for suit in suits:
@@ -148,7 +154,7 @@ def find_closest_card(raw_img, samples, verbose=False):
     assert (len(raw_img[0]) == sample_width)
     img = preprocess(raw_img)
     # img = cv2.equalizeHist(img)
-    diff_results = [(sample[0], card_diff(img, sample[1], verbose=True)) for sample in samples]
+    diff_results = [(sample[0], card_diff(img, sample[1])) for sample in samples]
     sorted_diff_results = sorted(diff_results, key=itemgetter(1))
     if verbose:
         print("Diff for another image:")
@@ -163,6 +169,10 @@ def classify_cards(cards, samples, verbose=False):
 
 
 def extract_cards_orthographic(filename):
+    # clear output folder to avoid reading unrelated card images in the future
+    shutil.rmtree(output_path)
+    os.makedirs(output_path)
+
     # load original image
     origin_image = cv2.imread(filename)
 
@@ -200,18 +210,23 @@ def load_cards(path):
     return [cv2.imread(os.path.join(path, filename)) for filename in os.listdir(path) if filename.startswith("card_")]
 
 
-def main():
+def main(use_cached_extracted_cards=False):
     filename = sys.argv[1] if len(sys.argv) > 1 else "images/t1.jpg"
 
-    cards = extract_cards_orthographic(filename)
-    # cards = load_cards(output_path)  # TODO: clear out folder
-    print("Extracted {} cards. Classifying...".format(len(cards)))
+    if not use_cached_extracted_cards:
+        cards = extract_cards_orthographic(filename)
+        print("Extracted {} cards. Classifying...".format(len(cards)))
+    else:
+        cards = load_cards(output_path)
+        print("Loaded {} cards from {}. Classifying...".format(len(cards), output_path))
 
-    # classify cards
+# classify cards
     samples = load_samples()
     answers = classify_cards(cards, samples, verbose=False)
     for card_name in answers:
         print(card_name)
 
 
-main()
+# execute main() when main.py is launched, not imported
+if __name__ == "__main__":
+    main()
