@@ -1,2 +1,9 @@
 # Ignore generated classifier samples, at least for now
 /classifier_samples/
+# Ignore test images
+/images/
+# Ignore output
+/out/
+
+# Ignore Python bytecode files
+**/*.pyc
