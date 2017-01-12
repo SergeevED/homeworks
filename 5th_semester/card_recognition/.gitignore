@@ -3,3 +3,6 @@
 
 # Ignore Python bytecode files
 **/*.pyc
+
+# Sandbox
+/temp.py

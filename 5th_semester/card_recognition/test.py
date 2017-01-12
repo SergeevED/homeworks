@@ -35,6 +35,16 @@ def test_one(image_path, verbose=False):
 
     if verbose:
         print("File: {}".format(image_path))
+
+        print("Expected results: "),
+        for actual_answer in actual_answers:
+            print("{} ".format(actual_answer)),
+        print("")
+        print("Received results: "),
+        for test_answer in test_answers:
+            print("{} ".format(test_answer)),
+        print("")
+
         print("Cards guessed:\t{:2}/{:2}\t{:3.2f}%".format(
             guessed_cards, total_cards,
             100.0 * guessed_cards / total_cards
@@ -43,7 +53,7 @@ def test_one(image_path, verbose=False):
             guessed_ranks, total_cards,
             100.0 * guessed_ranks / total_cards
         ))
-        print("Ranks guessed:\t{:2}/{:2}\t{:3.2f}%".format(
+        print("Suits guessed:\t{:2}/{:2}\t{:3.2f}%".format(
             guessed_suits, total_cards,
             100.0 * guessed_suits / total_cards
         ))
@@ -72,7 +82,7 @@ def test_all():
     print("Total:")
     print("Cards guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_cards, total_cards, 100.0 * guessed_cards / total_cards))
     print("Ranks guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_ranks, total_cards, 100.0 * guessed_ranks / total_cards))
-    print("Ranks guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_suits, total_cards, 100.0 * guessed_suits / total_cards))
+    print("Suits guessed:\t{:2}/{:2}\t{:3.2}%".format(guessed_suits, total_cards, 100.0 * guessed_suits / total_cards))
 
 
 if len(sys.argv) < 2:
