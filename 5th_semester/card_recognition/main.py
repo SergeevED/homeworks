@@ -9,12 +9,7 @@ from operator import itemgetter
 
 from util import preprocess
 
-
-def show_image(image_name, image_to_show):
-    cv2.imshow(image_name, image_to_show)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
+debug = False
 
 output_path = "out/"
 if not os.path.exists(output_path):
@@ -25,13 +20,19 @@ sample_width = 400
 sample_height = 560
 
 
+def show_image(image_name, image_to_show):
+    cv2.imshow(image_name, image_to_show)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
 def preprocess_orig(orig_image):
     gray = cv2.cvtColor(orig_image, cv2.COLOR_BGR2GRAY)
-    if __debug__:
+    if debug:
         cv2.imwrite(os.path.join(output_path, '005_gray.jpg'), gray)
     blur = gray
     thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 9, 0)
-    if __debug__:
+    if debug:
         cv2.imwrite(os.path.join(output_path, '020_thresh.jpg'), thresh)
     blur_thresh = thresh
     return blur_thresh
@@ -93,8 +94,10 @@ def get_cards_orthographic(origin_image, filtered_contours):
 
 
 def load_samples():
-    suits = ['d', 'h', 'c', 's']
-    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+    # suits = ['d', 'h', 'c', 's']
+    suits = ['s']
+    # ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+    ranks = ['3']
     out_samples = []
     for rank in ranks:
         for suit in suits:
@@ -107,10 +110,17 @@ def load_samples():
     return out_samples
 
 
-def img_diff(img1, img2):
+def img_diff(img1, img2, verbose=False):
     diff = cv2.absdiff(img1, img2)
     diff = cv2.GaussianBlur(diff, (5, 5), 5)
     _, diff = cv2.threshold(diff, 200, 255, cv2.THRESH_BINARY)
+
+    # debug code
+    if verbose:
+        cv2.imwrite("out/img1.jpg", img1)
+        cv2.imwrite("out/img2.jpg", img2)
+        print("diff = {}".format(np.sum(diff)))
+
     return np.sum(diff)
 
 
@@ -122,9 +132,9 @@ def rotate_180(img):
     return cv2.warpAffine(img, matrix, (width, height))
 
 
-def card_diff(found_card, sample):
-    diff1 = img_diff(found_card, sample)
-    diff2 = img_diff(found_card, rotate_180(sample))
+def card_diff(found_card, sample, verbose=False):
+    diff1 = img_diff(found_card, sample, verbose=verbose)
+    diff2 = img_diff(found_card, rotate_180(sample), verbose=verbose)
     return (diff1 + diff2) / 2
 
 
@@ -132,8 +142,8 @@ def find_closest_card(raw_img, samples, verbose=False):
     assert (len(raw_img) == sample_height)
     assert (len(raw_img[0]) == sample_width)
     img = preprocess(raw_img)
-    img = cv2.equalizeHist(img)
-    diff_results = [(sample[0], card_diff(img, sample[1])) for sample in samples]
+    # img = cv2.equalizeHist(img)
+    diff_results = [(sample[0], card_diff(img, sample[1], verbose=True)) for sample in samples]
     sorted_diff_results = sorted(diff_results, key=itemgetter(1))
     if verbose:
         print("Diff for another image:")
@@ -156,7 +166,7 @@ def extract_cards_orthographic(filename):
 
     # find contours
     contours, _ = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    if __debug__:
+    if debug:
         cont_im = np.ones((len(origin_image), len(origin_image[0]), 3)) * 255
         cv2.drawContours(cont_im, contours, -1, (0, 0, 0), 3)
         cv2.imwrite(os.path.join(output_path, '040_contours.jpg'), cont_im)
@@ -164,7 +174,7 @@ def extract_cards_orthographic(filename):
     # filter contours
     origin_image_area = len(origin_image) * len(origin_image[0])
     filtered_contours = filter_contours(contours, origin_image_area)
-    if __debug__:
+    if debug:
         cont_im = np.ones((len(origin_image), len(origin_image[0]), 3)) * 255
         for cnt in filtered_contours:
             cv2.drawContours(
@@ -188,8 +198,8 @@ def load_cards(path):
 def main():
     filename = sys.argv[1] if len(sys.argv) > 1 else "images/t3.jpg"
 
-    cards = extract_cards_orthographic(filename)
-    # cards = load_cards(output_path) # TODO: clear out folder
+    # cards = extract_cards_orthographic(filename)
+    cards = load_cards(output_path)  # TODO: clear out folder
     print("Extracted {} cards. Classifying...".format(len(cards)))
 
     # classify cards
