@@ -20,12 +20,7 @@ def preprocess(image, debug=False):
         cv2.imwrite("debug_proc_im/20_blur.jpg", blur)
         cv2.imwrite("debug_proc_im/40_thresh.jpg", thresh)
 
-        cv2.imwrite("debug_proc_im/45_eroded.jpg",eroded)
+        cv2.imwrite("debug_proc_im/45_eroded.jpg", eroded)
         cv2.imwrite("debug_proc_im/46_dilated.jpg", dilated)
 
     return dilated
-
-
-#image = cv2.imread("data_gen/cards/Qd.jpg")
-image = cv2.imread("out/card_01.jpg")
-preprocess(image, True)
