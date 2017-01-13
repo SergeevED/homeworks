@@ -20,6 +20,7 @@ if not os.path.exists(output_path):
 samples_path = "classifier_samples/"
 sample_width = 400
 sample_height = 560
+max_allowed_diff = 3000000.0
 
 
 def show_image(image_name, image_to_show):
@@ -149,12 +150,18 @@ def card_diff(found_card, sample, rotated_sample, verbose=False):
     return (diff1 + diff2) / 2
 
 
-def find_closest_card(raw_img, samples, verbose=False):
+def find_closest_card(raw_img, samples, verbose=False, filter_non_cards=False):
     assert (len(raw_img) == sample_height)
     assert (len(raw_img[0]) == sample_width)
     img = preprocess(raw_img)
     # img = cv2.equalizeHist(img)
     diff_results = [(sample[0], card_diff(img, sample[1], sample[2])) for sample in samples]
+
+    if filter_non_cards:
+        diff_results = filter(lambda x: x[1] <= max_allowed_diff, diff_results)
+        if len(diff_results) < 1:
+            return ""
+
     sorted_diff_results = sorted(diff_results, key=itemgetter(1))
     if verbose:
         print("Diff for another image:")
@@ -164,8 +171,8 @@ def find_closest_card(raw_img, samples, verbose=False):
 
 
 # classify found cards
-def classify_cards(cards, samples, verbose=False):
-    return [find_closest_card(card, samples, verbose=verbose) for card in cards]
+def classify_cards(cards, samples):
+    return filter(lambda x: x is not "", [find_closest_card(card, samples) for card in cards])
 
 
 def extract_cards_orthographic(filename):
@@ -211,18 +218,18 @@ def load_cards(path):
 
 
 def main(use_cached_extracted_cards=False):
-    filename = sys.argv[1] if len(sys.argv) > 1 else "images/t1.jpg"
+    filename = sys.argv[1] if len(sys.argv) > 1 else "images/t9.jpg"
 
     if not use_cached_extracted_cards:
         cards = extract_cards_orthographic(filename)
-        print("Extracted {} cards. Classifying...".format(len(cards)))
+        print("Extracted {} fragments. Classifying...".format(len(cards)))
     else:
         cards = load_cards(output_path)
-        print("Loaded {} cards from {}. Classifying...".format(len(cards), output_path))
+        print("Loaded {} fragments from {}".format(len(cards), output_path))
 
     # classify cards
     samples = load_samples()
-    answers = classify_cards(cards, samples, verbose=False)
+    answers = classify_cards(cards, samples)
     for card_name in answers:
         print(card_name)
 

@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import copy
 
-
 sample_width = 400
 sample_height = 560
 
@@ -23,11 +22,16 @@ def preprocess(image, debug=False):
         transform = cv2.getPerspectiveTransform(contour, h)
         thresh = cv2.warpPerspective(thresh, transform, (sample_width, sample_height))
 
+    # copy thresh to a bigger canvas to definitely find all contours
+    border = 5
+    thresh_bigger = np.ones((thresh.shape[0] + border * 2, thresh.shape[1] + border * 2), np.uint8) * 255
+    thresh_bigger[border:border + thresh.shape[0], border:border + thresh.shape[1]] = thresh
+    thresh = thresh_bigger
     thresh_not_corrupted = copy.deepcopy(thresh)
 
-    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
-    origin_image_area = len(image) * len(image[0])
+    origin_image_area = len(thresh) * len(thresh[0])
 
     filtered_contours = []
     for cnt in contours:
@@ -40,8 +44,11 @@ def preprocess(image, debug=False):
         for point in cnt:
             merged_contours.append(point)
 
-    cont_im = np.ones((len(image), len(image[0]), 3)) * 255
+    cont_im = np.ones((len(thresh), len(thresh[0])), np.uint8) * 255
     cv2.drawContours(cont_im, merged_contours, -1, (0, 0, 0), 3)
+
+    if len(merged_contours) == 0:
+        return cv2.resize(cont_im, (sample_width, sample_height))
 
     x, y, w, h = cv2.boundingRect(np.asarray(merged_contours))
     cv2.rectangle(cont_im, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -59,7 +66,6 @@ def preprocess(image, debug=False):
 
     return cut_im
 
-
-#image = cv2.imread("data_gen/cards/Qd.jpg")
-#image = cv2.imread("out/card_01.jpg")
-#preprocess(image, True)
+# image = cv2.imread("data_gen/cards/Qd.jpg")
+# image = cv2.imread("out/card_01.jpg")
+# preprocess(image, True)
