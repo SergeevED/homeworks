@@ -20,7 +20,8 @@ def test_one(image_path, verbose=False):
         sys.exit(1)
 
     samples = load_samples()
-    test_answers = classify_cards(cards, samples, verbose=False)
+    test_answers = classify_cards(cards, samples)
+
     guessed_ranks = 0
     guessed_suits = 0
     guessed_cards = 0
@@ -36,11 +37,11 @@ def test_one(image_path, verbose=False):
     if verbose:
         print("File: {}".format(image_path))
 
-        print("Expected results: "),
+        print("Expected results: \n\t"),
         for actual_answer in actual_answers:
             print("{} ".format(actual_answer)),
         print("")
-        print("Received results: "),
+        print("Received results: \n\t"),
         for test_answer in test_answers:
             print("{} ".format(test_answer)),
         print("")
@@ -57,6 +58,13 @@ def test_one(image_path, verbose=False):
             guessed_suits, total_cards,
             100.0 * guessed_suits / total_cards
         ))
+        if len(test_answers) < len(actual_answers):
+            print("Missed {} cards!".format(len(actual_answers) - len(test_answers)))
+        if guessed_cards < total_cards:
+            print("Guessed wrong:")
+            for wrong, right in filter(lambda (x, y): x != y, zip(test_answers, actual_answers)):
+                print("\t{} (answered {})".format(right, wrong))
+        print("")
 
     return guessed_ranks, guessed_suits, guessed_cards, total_cards
 

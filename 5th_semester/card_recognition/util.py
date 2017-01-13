@@ -2,14 +2,24 @@ import cv2
 import numpy as np
 import copy
 
+out_width = 400
+out_height = 560
+
 
 def preprocess(image, debug=False):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, thresh = cv2.threshold(gray, np.average(gray) * 0.8, 255, cv2.THRESH_BINARY)
-    thresh_not_corrupted = copy.deepcopy(thresh)
-    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
-    origin_image_area = len(image) * len(image[0])
+    # copy thresh to a bigger canvas to definitely find all contours
+    border = 5
+    thresh_bigger = np.ones((thresh.shape[0] + border * 2, thresh.shape[1] + border * 2), np.uint8) * 255
+    thresh_bigger[border:border + thresh.shape[0], border:border + thresh.shape[1]] = thresh
+    thresh = thresh_bigger
+    thresh_not_corrupted = copy.deepcopy(thresh)
+
+    contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+
+    origin_image_area = len(thresh) * len(thresh[0])
 
     filtered_contours = []
     for cnt in contours:
@@ -22,15 +32,17 @@ def preprocess(image, debug=False):
         for point in cnt:
             merged_contours.append(point)
 
-    cont_im = np.ones((len(image), len(image[0]), 3)) * 255
+    cont_im = np.ones((len(thresh), len(thresh[0])), np.uint8) * 255
     cv2.drawContours(cont_im, merged_contours, -1, (0, 0, 0), 3)
+
+    if len(merged_contours) == 0:
+        return cv2.resize(cont_im, (out_width, out_height))
 
     x, y, w, h = cv2.boundingRect(np.asarray(merged_contours))
     cv2.rectangle(cont_im, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     cut_im = thresh_not_corrupted[y:y + h, x:x + w]
-    cut_im = cv2.resize(cut_im, (400, 560))
-
+    cut_im = cv2.resize(cut_im, (out_width, out_height))
 
     if debug:
         cv2.imwrite("debug_proc_im/00_origin.jpg", image)
@@ -41,7 +53,6 @@ def preprocess(image, debug=False):
 
     return cut_im
 
-
-#image = cv2.imread("data_gen/cards/Qd.jpg")
-#image = cv2.imread("out/card_01.jpg")
-#preprocess(image, True)
+# image = cv2.imread("debug_proc_im/00_origin.jpg")
+# image = cv2.imread("out/card_11.jpg")
+# preprocess(image, True)
