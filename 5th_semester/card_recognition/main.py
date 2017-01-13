@@ -33,12 +33,11 @@ def preprocess_orig(orig_image):
     gray = cv2.cvtColor(orig_image, cv2.COLOR_BGR2GRAY)
     if debug:
         cv2.imwrite(os.path.join(output_path, '005_gray.jpg'), gray)
-    blur = gray
-    thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 9, 0)
+    denoised = cv2.fastNlMeansDenoising(src=gray, h=5, templateWindowSize=7, searchWindowSize=21)
+    thresh = cv2.adaptiveThreshold(denoised, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 9, 0)
     if debug:
         cv2.imwrite(os.path.join(output_path, '020_thresh.jpg'), thresh)
-    blur_thresh = thresh
-    return blur_thresh
+    return thresh
 
 
 def filter_contours(contours, origin_image_area):
@@ -154,7 +153,6 @@ def find_closest_card(raw_img, samples, verbose=False, filter_non_cards=False):
     assert (len(raw_img) == sample_height)
     assert (len(raw_img[0]) == sample_width)
     img = preprocess(raw_img)
-    # img = cv2.equalizeHist(img)
     diff_results = [(sample[0], card_diff(img, sample[1], sample[2])) for sample in samples]
 
     if filter_non_cards:

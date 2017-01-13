@@ -22,12 +22,10 @@ File: images/all_6-T.jpg
 Expected results: 
 	6d  6h  6c  6s  7d  7h  7c  7s  8d  8h  8c  8s  9d  9h  9c  9s  Td  Th  Tc  Ts  
 Received results: 
-	6d  6h  6c  6s  7d  7h  Ad  7s  8d  8h  8c  8s  9d  9h  9c  9s  Td  Th  Tc  Ts  
-Cards guessed:	19/20	95.00%
-Ranks guessed:	19/20	95.00%
-Suits guessed:	19/20	95.00%
-Guessed wrong:
-	7c (answered Ad)
+	6d  6h  6c  6s  7d  7h  7c  7s  8d  8h  8c  8s  9d  9h  9c  9s  Td  Th  Tc  Ts  
+Cards guessed:	20/20	100.00%
+Ranks guessed:	20/20	100.00%
+Suits guessed:	20/20	100.00%
 
 File: images/all_J-A.jpg
 Expected results: 
@@ -37,6 +35,51 @@ Received results:
 Cards guessed:	16/16	100.00%
 Ranks guessed:	16/16	100.00%
 Suits guessed:	16/16	100.00%
+
+File: images/dark.jpg
+Expected results: 
+	6s  6d  4h  6h  6c  4d  4s  4c  
+Received results: 
+	6s  6d  4h  6h  6c  4d  4s  4c  
+Cards guessed:	 8/ 8	100.00%
+Ranks guessed:	 8/ 8	100.00%
+Suits guessed:	 8/ 8	100.00%
+
+File: images/s1.jpg
+Expected results: 
+	Ah  9s  9h  9c  6c  6s  6d  Ad  Ac  As  6h  9d  
+Received results: 
+	Ah  9s  9h  9c  6c  6s  6d  Ad  Ac  As  6h  9d  
+Cards guessed:	12/12	100.00%
+Ranks guessed:	12/12	100.00%
+Suits guessed:	12/12	100.00%
+
+File: images/s2.jpg
+Expected results: 
+	4h  4c  Ts  4d  4s  Th  Tc  Td  
+Received results: 
+	4h  4c  Ts  4d  4s  Th  Tc  Td  
+Cards guessed:	 8/ 8	100.00%
+Ranks guessed:	 8/ 8	100.00%
+Suits guessed:	 8/ 8	100.00%
+
+File: images/s3.jpg
+Expected results: 
+	4c  4s  4d  6c  6h  4h  6d  6s  
+Received results: 
+	4c  4s  4d  6c  6h  4h  6d  6s  
+Cards guessed:	 8/ 8	100.00%
+Ranks guessed:	 8/ 8	100.00%
+Suits guessed:	 8/ 8	100.00%
+
+File: images/s4.jpg
+Expected results: 
+	Kh  Kc  Ah  Ad  Ac  As  
+Received results: 
+	Kh  Kc  Ah  Ad  Ac  As  
+Cards guessed:	 6/ 6	100.00%
+Ranks guessed:	 6/ 6	100.00%
+Suits guessed:	 6/ 6	100.00%
 
 File: images/t1.jpg
 Expected results: 
@@ -78,26 +121,19 @@ File: images/t5.jpg
 Expected results: 
 	As  Td  Ks  Kc  4h  
 Received results: 
-	As  Ad  Ks  Qd  4s  
-Cards guessed:	 2/ 5	40.00%
-Ranks guessed:	 3/ 5	60.00%
-Suits guessed:	 3/ 5	60.00%
-Guessed wrong:
-	Td (answered Ad)
-	Kc (answered Qd)
-	4h (answered 4s)
+	As  Td  Ks  Kc  4h  
+Cards guessed:	 5/ 5	100.00%
+Ranks guessed:	 5/ 5	100.00%
+Suits guessed:	 5/ 5	100.00%
 
 File: images/t6.jpg
 Expected results: 
 	8s  5h  8d  Js  Jc  5d  Jd  5s  8h  Jh  5c  8c  
 Received results: 
-	8s  5h  8d  Js  Jc  Ad  Qd  5s  8h  Jh  5c  8c  
-Cards guessed:	10/12	83.33%
-Ranks guessed:	10/12	83.33%
+	8s  5h  8d  Js  Jc  5d  Jd  5s  8h  Jh  5c  8c  
+Cards guessed:	12/12	100.00%
+Ranks guessed:	12/12	100.00%
 Suits guessed:	12/12	100.00%
-Guessed wrong:
-	5d (answered Ad)
-	Jd (answered Qd)
 
 File: images/t7.jpg
 Expected results: 
@@ -108,40 +144,8 @@ Cards guessed:	52/52	100.00%
 Ranks guessed:	52/52	100.00%
 Suits guessed:	52/52	100.00%
 
-File: images/t8.jpg
-Expected results: 
-	Jc  7h  Jh  7d  7c  Js  Jd  7s  
-Received results: 
-	Jc  7h  Kd  Jh  7d  7c  As  Ad  Js  Jd  7s  
-Cards guessed:	 2/ 8	25.00%
-Ranks guessed:	 3/ 8	37.50%
-Suits guessed:	 2/ 8	25.00%
-Guessed wrong:
-	Jh (answered Kd)
-	7d (answered Jh)
-	7c (answered 7d)
-	Js (answered 7c)
-	Jd (answered As)
-	7s (answered Ad)
-
-File: images/t9.jpg
-Expected results: 
-	Jc  7h  7d  Jh  7c  Js  Jd  7s  
-Received results: 
-	Jc  7h  Ad  7d  Jh  Ad  7c  Js  2d  Jd  Qd  
-Cards guessed:	 2/ 8	25.00%
-Ranks guessed:	 2/ 8	25.00%
-Suits guessed:	 4/ 8	50.00%
-Guessed wrong:
-	7d (answered Ad)
-	Jh (answered 7d)
-	7c (answered Jh)
-	Js (answered Ad)
-	Jd (answered 7c)
-	7s (answered Js)
-
 
 Total:
-Cards guessed:	201/220	91.36%
-Ranks guessed:	204/220	92.73%
-Suits guessed:	206/220	93.64%
+Cards guessed:	245/246	99.59%
+Ranks guessed:	246/246	100.00%
+Suits guessed:	245/246	99.59%

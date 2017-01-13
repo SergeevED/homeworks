@@ -1,0 +1,157 @@
+File: images/all.jpg
+Expected results: 
+	2d  2h  2c  2s  3d  3h  3c  3s  4d  4c  4h  4s  5d  5h  5c  5s  6d  6h  7d  6c  6s  7h  7c  7s  8d  8h  8c  8s  9c  9d  9s  9h  Td  Th  Tc  Ts  Jd  Jh  Jc  Qd  Js  Qh  Qc  Qs  Kd  Kh  Kc  Ks  Ad  Ah  Ac  As  
+Received results: 
+	2d  2h  2c  2s  3d  3h  3c  3s  4d  4c  4h  4s  5d  5h  5c  5s  6d  6h  7d  6c  6s  7h  7c  7s  8d  8h  8c  8s  9c  9s  9s  9h  Td  Th  Tc  Ts  Jd  Jh  Jc  Qd  Js  Qh  Qc  Qs  Kd  Kh  Kc  Ks  Ad  Ah  Ac  As  
+Cards guessed:	51/52	98.08%
+Ranks guessed:	52/52	100.00%
+Suits guessed:	51/52	98.08%
+Guessed wrong:
+	9d (answered 9s)
+
+File: images/all_2-5.jpg
+Expected results: 
+	2d  2h  2c  2s  3d  3h  3c  3s  4d  4h  4c  4s  5d  5h  5c  5s  
+Received results: 
+	2d  2h  2c  2s  3d  3h  3c  3s  4d  4h  4c  4s  5d  5h  5c  5s  
+Cards guessed:	16/16	100.00%
+Ranks guessed:	16/16	100.00%
+Suits guessed:	16/16	100.00%
+
+File: images/all_6-T.jpg
+Expected results: 
+	6d  6h  6c  6s  7d  7h  7c  7s  8d  8h  8c  8s  9d  9h  9c  9s  Td  Th  Tc  Ts  
+Received results: 
+	6d  6h  6c  6s  7d  7h  7c  7s  8d  8h  8c  8s  9d  9h  9c  9s  Td  Th  Tc  Ts  
+Cards guessed:	20/20	100.00%
+Ranks guessed:	20/20	100.00%
+Suits guessed:	20/20	100.00%
+
+File: images/all_J-A.jpg
+Expected results: 
+	Jd  Jh  Jc  Js  Qd  Qh  Qc  Qs  Kd  Kh  Kc  Ks  Ad  Ah  Ac  As  
+Received results: 
+	Jd  Jh  Jc  Js  Qd  Qh  Qc  Qs  Kd  Kh  Kc  Ks  Ad  Ah  Ac  As  
+Cards guessed:	16/16	100.00%
+Ranks guessed:	16/16	100.00%
+Suits guessed:	16/16	100.00%
+
+File: images/dark.jpg
+Expected results: 
+	6s  6d  4h  6h  6c  4d  4s  4c  
+Received results: 
+	6s  6d  4h  6s  4d  4s  4c  
+Cards guessed:	 3/ 8	37.50%
+Ranks guessed:	 6/ 8	75.00%
+Suits guessed:	 3/ 8	37.50%
+Missed 1 cards!
+Guessed wrong:
+	6h (answered 6s)
+	6c (answered 4d)
+	4d (answered 4s)
+	4s (answered 4c)
+
+File: images/s1.jpg
+Expected results: 
+	Ah  9s  9h  9c  6c  6s  6d  Ad  Ac  As  6h  9d  
+Received results: 
+	Ah  9s  9h  9c  6c  6s  6d  Ad  Ac  As  6h  9d  
+Cards guessed:	12/12	100.00%
+Ranks guessed:	12/12	100.00%
+Suits guessed:	12/12	100.00%
+
+File: images/s2.jpg
+Expected results: 
+	4h  4c  Ts  4d  4s  Th  Tc  Td  
+Received results: 
+	4h  4c  Ts  4d  4s  Th  Tc  Td  
+Cards guessed:	 8/ 8	100.00%
+Ranks guessed:	 8/ 8	100.00%
+Suits guessed:	 8/ 8	100.00%
+
+File: images/s3.jpg
+Expected results: 
+	4c  4s  4d  6c  6h  4h  6d  6s  
+Received results: 
+	4c  4s  4d  6c  6h  4h  6d  6s  
+Cards guessed:	 8/ 8	100.00%
+Ranks guessed:	 8/ 8	100.00%
+Suits guessed:	 8/ 8	100.00%
+
+File: images/s4.jpg
+Expected results: 
+	Kh  Kc  Ah  Ad  Ac  As  
+Received results: 
+	Kh  Kc  Ah  Ad  Ac  As  
+Cards guessed:	 6/ 6	100.00%
+Ranks guessed:	 6/ 6	100.00%
+Suits guessed:	 6/ 6	100.00%
+
+File: images/t1.jpg
+Expected results: 
+	2s  3c  3s  Qd  Qc  3h  2d  3d  2c  Qh  Qs  2h  
+Received results: 
+	2s  3c  3s  Qd  Qc  3h  2d  3d  2c  Qh  Qs  2h  
+Cards guessed:	12/12	100.00%
+Ranks guessed:	12/12	100.00%
+Suits guessed:	12/12	100.00%
+
+File: images/t2.jpg
+Expected results: 
+	2h  2c  Qd  2d  3d  Qs  2s  Qh  Qc  3h  3c  3s  
+Received results: 
+	2h  2c  Qd  2d  3d  Qs  2s  Qh  Qc  3h  3c  3s  
+Cards guessed:	12/12	100.00%
+Ranks guessed:	12/12	100.00%
+Suits guessed:	12/12	100.00%
+
+File: images/t3.jpg
+Expected results: 
+	Qs  2d  
+Received results: 
+	Qs  2d  
+Cards guessed:	 2/ 2	100.00%
+Ranks guessed:	 2/ 2	100.00%
+Suits guessed:	 2/ 2	100.00%
+
+File: images/t4.jpg
+Expected results: 
+	As  Ks  Td  4h  Kc  
+Received results: 
+	As  Ks  Td  4h  Kc  
+Cards guessed:	 5/ 5	100.00%
+Ranks guessed:	 5/ 5	100.00%
+Suits guessed:	 5/ 5	100.00%
+
+File: images/t5.jpg
+Expected results: 
+	As  Td  Ks  Kc  4h  
+Received results: 
+	As  Td  Ks  Kc  4h  
+Cards guessed:	 5/ 5	100.00%
+Ranks guessed:	 5/ 5	100.00%
+Suits guessed:	 5/ 5	100.00%
+
+File: images/t6.jpg
+Expected results: 
+	8s  5h  8d  Js  Jc  5d  Jd  5s  8h  Jh  5c  8c  
+Received results: 
+	8s  5h  8d  Js  Jc  5d  Jd  5s  8h  Jh  5c  8c  
+Cards guessed:	12/12	100.00%
+Ranks guessed:	12/12	100.00%
+Suits guessed:	12/12	100.00%
+
+File: images/t7.jpg
+Expected results: 
+	2d  2h  2c  2s  3d  4c  3h  4s  3c  5d  5h  3s  5c  7d  4d  5s  4h  7h  6d  7c  6h  7s  9c  6c  8d  9s  6s  8h  Td  8c  Th  8s  Tc  Qd  9d  Ts  Qh  9h  Jd  Qc  Jh  Qs  Ad  Kd  Jc  Ah  Kh  Js  Ac  Kc  As  Ks  
+Received results: 
+	2d  2h  2c  2s  3d  4c  3h  4s  3c  5d  5h  3s  5c  7d  4d  5s  4h  7h  6d  7c  6h  7s  9c  6c  8d  9s  6s  8h  Td  8c  Th  8s  Tc  Qd  9d  Ts  Qh  9h  Jd  Qc  Jh  Qs  Ad  Kd  Jc  Ah  Kh  Js  Ac  Kc  As  Ks  
+Cards guessed:	52/52	100.00%
+Ranks guessed:	52/52	100.00%
+Suits guessed:	52/52	100.00%
+
+
+Total:
+Cards guessed:	240/246	97.56%
+Ranks guessed:	244/246	99.19%
+Suits guessed:	240/246	97.56%
