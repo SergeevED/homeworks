@@ -1,7 +1,7 @@
-#include "ircClient.h"
+#include "IrcClient.h"
 
 
-ircClient::ircClient(std::string host, uint16_t port) {
+IrcClient::IrcClient(std::string host, uint16_t port) {
     hostent *ircHostent = gethostbyname(host.c_str());
     if (ircHostent == NULL) {
         throw std::runtime_error("Cannot resolve host name: " + host);
@@ -26,25 +26,26 @@ ircClient::ircClient(std::string host, uint16_t port) {
         char buffer[mMaxMessageLength + 1];
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(mSleepTime));
-            const char *suffix = "PRIVMSG #spbtesting :";
+            const char *suffix = ("PRIVMSG " + mChannel + " :").c_str();
             size_t suffixLength = strlen(suffix);
             strcpy(buffer, suffix);
             std::cin.getline(buffer + suffixLength, mMaxMessageLength - strlen(mTrailingCharacters) - suffixLength);
         } while (sendMessage(buffer));
-        std::cout << "Error: cannot send message!\n";
+        throw std::runtime_error("Cannot send message");
     };
     mSenderThread = std::thread(sender);
 }
 
-ircClient::~ircClient() {
+IrcClient::~IrcClient() {
     sendMessage("QUIT");
     close(mDescriptor);
 }
 
-void ircClient::start(std::string nick, std::string channel) {
+void IrcClient::start(std::string nick, std::string channel) {
+    mChannel = channel;
     sendMessage(("USER " + nick + " * * : ").c_str());
     sendMessage(("NICK " + nick).c_str());
-    sendMessage(("JOIN " + channel).c_str());
+    sendMessage(("JOIN " + mChannel).c_str());
 
     while (true) {
         char buffer[mMaxMessageLength + 1] = {'\0'};
@@ -57,7 +58,12 @@ void ircClient::start(std::string nick, std::string channel) {
 
         if (msg.find("PING") == 0) {
             sendMessage((std::string("PO") + (msg.c_str() + 2)).c_str());
-        } else if (msg[0] == ':') {
+        } else if (msg.find("show some magic") != std::string::npos && msg.find(nick) != std::string::npos) {
+            std::string news = std::string();
+            NewsReceiver mNewsReceiver = NewsReceiver();
+            mNewsReceiver.getRandomNews(news);
+            sendMessage(("PRIVMSG " + mChannel + " :" + news).c_str());
+        }else if (msg[0] == ':') {
             msg.erase(0, 1);
             const size_t firstSpaceIndex = msg.find(' ');
             if (firstSpaceIndex + 1 == msg.find("PART")) {
@@ -69,18 +75,17 @@ void ircClient::start(std::string nick, std::string channel) {
             }
         }
         std::cout << msg;
-
         std::this_thread::sleep_for(std::chrono::milliseconds(mSleepTime));
     }
 }
 
-bool ircClient::sendMessage(const char *msg) const {
+bool IrcClient::sendMessage(const char *msg) const {
     const size_t msgLength = strlen(msg) + strlen(mTrailingCharacters);
     char buffer[mMaxMessageLength + 1] = {'\0'};
     ssize_t bytesSent = write(mDescriptor, strcat(strcat(buffer, msg), mTrailingCharacters), msgLength);
     return (bytesSent >= 0 && (size_t)bytesSent == msgLength);
 }
 
-ssize_t ircClient::receiveMessage(char *msg) const {
+ssize_t IrcClient::receiveMessage(char *msg) const {
     return read(mDescriptor, msg, mMaxMessageLength);
 }
