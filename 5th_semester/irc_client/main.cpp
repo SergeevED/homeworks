@@ -7,7 +7,7 @@ int main() {
         std::cout << "Enter your nickname:\n";
         std::cin >> nick;
         IrcClient ic(std::string("irc.freenode.org"), 6667);
-        ic.start(nick, std::string("#spbtesting"));
+        ic.start(nick, std::string("#spbnet"));
     } catch (const std::runtime_error& error) {
         std::cout << error.what();
     }

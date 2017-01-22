@@ -74,7 +74,6 @@ void IrcClient::start(std::string nick, std::string channel) {
                 std::cout << msg.erase(msg.find('!'),  msg.find('#') - msg.find('!') - 1);
             }
         }
-        std::cout << msg;
         std::this_thread::sleep_for(std::chrono::milliseconds(mSleepTime));
     }
 }
